@@ -5,13 +5,10 @@ Class Cart {
 	var $LineCounter;
 	var $ItemsOrdered;
 	var $entryDate;
-	var $currency;
-	var $DelAdd;
 	var $PhoneNo;
 	var $Email;
-	var $merchantNo;
-	var $TransID;
 	Var $OrderNo;
+	var $observation;
 	function Cart(){
 		$this->LineItems = array();
 		$this->total=0;
@@ -40,7 +37,9 @@ Class Cart {
 	function update_cart_duration($UpdateLineNumber,$duration){
 		$this->LineItems[$UpdateLineNumber]->duration= $duration;
 	}
-
+	function update_observation($obs){
+		$this->observation=$obs;
+	}
 	function remove_from_cart($LineNumber){
 		if (!isset($LineNumber) || $LineNumber=='' || $LineNumber < 0){
 			//prnMsg(_('No Line Number passed to remove_from_cart, so nothing has been removed.'), 'error');

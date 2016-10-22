@@ -1,13 +1,13 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
   ?>
   <html>
-  <?PHP $fO->includeHead('Patient List',0) ?>
+  <?PHP $dao->includeHead('Patient List',0) ?>
   </head>
   <body class="container">
-  <?PHP $fO->includeMenu(3); ?>
+  <?PHP $dao->includeMenu(3); ?>
 	<div id="menu_main">
     <a href="manage_doctor.php" id="item_selected">Encounter List</a>
 		<a href="appointment_list.php">Appointments</a>
@@ -35,12 +35,12 @@
           <th>Temperature</th>
           <th>Blood Pressure</th>
 					<th>Patient Type</th>
-					<th>New Appointment</th>
+					<th>Action</th>
   </form>
   </tr>
   <?php
   if(isset($_REQUEST['srch-term'])){
-    $patients=$fO->getPatientPendingEncounters($_REQUEST['srch-term']);
+    $patients=$dao->getPatientPendingEncounters($_REQUEST['srch-term']);
     foreach($patients as $patient){
 			$patientType="OP";
 			if($patient['admitted']==1){
@@ -65,7 +65,7 @@
     }
   }
   else{
-    $patients=$fO->getNewPatientEncounters();
+    $patients=$dao->getNewPatientEncounters();
     foreach($patients as $patient){
 			$patientType="OP";
 			if($patient['admitted']==1){

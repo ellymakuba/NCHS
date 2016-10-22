@@ -1,13 +1,13 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
   ?>
   <html>
-  <?PHP $fO->includeHead('Active Encounters',0) ?>
+  <?PHP $dao->includeHead('Active Encounters',0) ?>
   </head>
   <body class="container">
-  <?PHP $fO->includeMenu(6); ?>
+  <?PHP $dao->includeMenu(6); ?>
 	<div id="menu_main">
 		<a href="manage_billing.php" id="item_selected">Active Encounters</a>
     </div>
@@ -25,7 +25,7 @@
   <table class="table table-striped">
   <tr>
   <form  method="POST">
-    <th>Dashboard</th>
+    <th>Action</th>
           <th>Patient Name</th>
           <th>Temperature</th>
           <th>Blood Pressure</th>
@@ -34,13 +34,13 @@
   </tr>
   <?php
   if(isset($_REQUEST['srch-term'])){
-    $patients=$fO->getPatientActiveEncounter($_REQUEST['srch-term']);
+    $patients=$dao->getPatientActiveEncounter($_REQUEST['srch-term']);
     foreach($patients as $patient){
 			$patientType="OP";
 			if($patient['admitted']==1){
 				$patientType="IP";
 			}
-      printf("<tr><td><a href=\"patient_billing.php?selectedEncounter=%s\">" .$patient['encounter_id'] . "</a></td>
+      printf("<tr><td><a href=\"patient_billing.php?selectedEncounter=%s\">Receive Payment</a></td>
 	    <td>%s</td>
 	    <td>%s</td>
 	    <td>%s</td>
@@ -56,13 +56,13 @@
     }
   }
   else{
-    $patients=$fO->getPatientActiveEncounterList();
+    $patients=$dao->getNewPatientEncounters();
     foreach($patients as $patient){
 			$patientType="OP";
 			if($patient['admitted']==1){
 				$patientType="IP";
 			}
-			printf("<tr><td><a href=\"patient_billing.php?selectedEncounter=%s\">" .$patient['encounter_id'] . "</a></td>
+			printf("<tr><td><a href=\"patient_billing.php?selectedEncounter=%s\">Receive Payment</a></td>
 	    <td>%s</td>
 	    <td>%s</td>
 	    <td>%s</td>

@@ -1,7 +1,7 @@
 <?PHP
 //Select Overdue Loan Instalments from LTRANS
 $timestamp = time();
-$defaulters=$functionObject->getLoanDefaulters($timestamp);
+$defaulters=$dao->getLoanDefaulters($timestamp);
 ?>
 
 <table id="tb_table">

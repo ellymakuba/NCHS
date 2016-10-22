@@ -1,15 +1,15 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 	if (isset($_POST['create'])){
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Drug List',0) ?>
+  <?PHP $dao->includeHead('Drug List',0) ?>
   </head>
   <body class="container">
-  <?PHP $fO->includeMenu(9); ?>
+  <?PHP $dao->includeMenu(9); ?>
 	<div id="menu_main">
     <a href="cust_search.php">Users</a>
     <a href="cust_search.php">Roles</a>
@@ -50,7 +50,7 @@
   </tr>
   <?php
   if(isset($_REQUEST['srch-term'])){
-    $drugs=$fO->getDrugName($_REQUEST['srch-term']);
+    $drugs=$dao->getDrugName($_REQUEST['srch-term']);
     foreach($drugs as $drug){
       printf("<tr><td><a href=\"new_drug.php?SelectedDrug=%s\">" .$drug['id'] . "</a></td>
     <td>%s</td>
@@ -69,7 +69,7 @@
     }
   }
   else{
-    $drugs=$fO->getAllDrugs();
+    $drugs=$dao->getAllDrugs();
     foreach($drugs as $drug){
       printf("<tr><td><a href=\"new_drug.php?SelectedDrug=%s\">" .$drug['id'] . "</a></td>
     <td>%s</td>

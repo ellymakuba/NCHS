@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
 <?PHP
-	require 'functions.php';
-	$functionObject=new functions();
-	$functionObject->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();;
+	$dao->checkLogin();
 ?>
 <html>
-	<?PHP $functionObject->includeHead('Microfinance Management',1); ?>
+	<?PHP $dao->includeHead('Microfinance Management',1); ?>
 	<body>
 		<?PHP
-				$functionObject->includeMenu(1);
+				$dao->includeMenu(1);
 		?>
 		<div id="menu_main">
 			<a href="cust_search.php" id="item_selected">Patient List</a>
@@ -20,6 +20,6 @@
 		<div  class="content_right" style="width:50%;">
 			<?PHP include $_SESSION['set_dashr']; ?>
 		</div>
-		<?PHP	$functionObject->checkLogout();	?>
+		<?PHP	$dao->checkLogout();	?>
 	</body>
 </html>

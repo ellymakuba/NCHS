@@ -1,27 +1,27 @@
 <?PHP
-	require 'functions.php';
+	require 'data_access_object.php';
   include 'bill_payment_cart.php';
-	$fO=new functions();
-	$fO->checkLogin();
-	$fO->getHospitalCharges();
+	$dao=new DAO();
+	$dao->checkLogin();
+	$dao->getHospitalCharges();
 	if (isset($_POST['receive_payment'])){
 		if((isset($_POST['paid']) && isset($_POST['total'])) && ($_POST['paid']>$_POST['total'])){
     if(count($_SESSION['pharmacy_cart']->lineItems)>0){
       foreach($_SESSION['pharmacy_cart']->lineItems as $pharmacyItem){
-          $fO->receivePharmacyPayment($pharmacyItem->prescriptionId,$pharmacyItem->itemId,$pharmacyItem->cost,$_SESSION['log_user']);
+          $dao->receivePharmacyPayment($pharmacyItem->prescriptionId,$pharmacyItem->itemId,$pharmacyItem->cost,$_SESSION['log_user']);
       }
     }
 		if(count($_SESSION['lab_tests']->lineItems)>0){
 			foreach($_SESSION['lab_tests']->lineItems as $test){
-          $fO->receiveLabTestPayment($test->prescriptionId,$test->itemId,$test->cost,$_SESSION['log_user']);
+          $dao->receiveLabTestPayment($test->prescriptionId,$test->itemId,$test->cost,$_SESSION['log_user']);
       }
 		}
 		if(count($_SESSION['consultation_charges']->lineItems)>0){
 			foreach($_SESSION['consultation_charges']->lineItems as $item){
-				$fO->chargeConsultationFee($item->prescriptionId,$item->itemId,$item->cost,$_SESSION['log_user']);
+				$dao->chargeConsultationFee($item->prescriptionId,$item->itemId,$item->cost,$_SESSION['log_user']);
 			}
 		}
-		$fO->clearBill($_SESSION['encounter']);
+		$dao->clearBill($_SESSION['encounter']);
 		unset($_SESSION['pharmacy_cart']);
 		unset($_SESSION['lab_tests']);
 		unset($_SESSION['encounter']);
@@ -33,7 +33,7 @@
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Patient Billing',0) ?>
+  <?PHP $dao->includeHead('Patient Billing',0) ?>
 	<script>
 	$(document).ready(function(){
     var totalAmount=0;
@@ -55,7 +55,7 @@
 	</script>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(6); ?>
+    <?PHP $dao->includeMenu(6); ?>
   	<div id="menu_main">
       <a href="manage_billing.php">Manage Billing</a>
 			<a href="patient_billing.php" id="item_selected">Patient Billing</a>
@@ -65,8 +65,8 @@
 				$_SESSION['encounter']=$_REQUEST['selectedEncounter'];
 			}
 			if(isset($_SESSION['encounter'])){
-				$encounter=$fO->getEncounterByID($_SESSION['encounter']);
-				$patient=$fO->getPatientByID($encounter['patient_id']);
+				$encounter=$dao->getEncounterByID($_SESSION['encounter']);
+				$patient=$dao->getPatientByID($encounter['patient_id']);
 				if($encounter['bill_cleared']==1){
 					echo '<div class="col-sm-3 col-md-3 pull-right">';
 					echo '<span class="btn btn-lg btn-primary">Patient Bill Cleared</span>';
@@ -94,7 +94,7 @@
 			</div>
 			<div style="clear:both;"></div>
 			<?php
-			$encounterList=$fO->getPatientHistory($patient['patient_id']);
+			$encounterList=$dao->getPatientHistory($patient['patient_id']);
 			if(count($encounterList)>0){
 				echo '<h2 class="form-signin-heading">Patient History</h2>';
 				echo '<table class="table table-striped" style="border-spacing:2px;border-collapse:separate;width:100%;">';
@@ -121,7 +121,7 @@
 				value="'.$_SESSION['consultation_fee'].'">';
 			}
       $patientTotalBill=0;
-			$orders=$fO->getPharmacyOrdersByEncounterId($_SESSION['encounter']);
+			$orders=$dao->getPharmacyOrdersByEncounterId($_SESSION['encounter']);
       $pharmacyTotalBill=0;
         $_SESSION['pharmacy_cart']=new BillPaymentCart;
 				if(count($orders)>0){
@@ -133,7 +133,7 @@
           value="'.$order['con_time'].'">';
           echo '</div>';
           echo '<div style="clear:both"></div>';
-          $dispensedOrders=$fO->getPharmacyOrdersDispensedByPrescriptionId($order['prescription_id']);
+          $dispensedOrders=$dao->getPharmacyOrdersDispensedByPrescriptionId($order['prescription_id']);
           if(count($dispensedOrders)>0){
             $prescriptionTotal=0;
           foreach($dispensedOrders as $dispensedOrder){
@@ -153,7 +153,7 @@
         }
 				}
 			}
-      $labOrders=$fO->getLabOrdersByEncounterId($_SESSION['encounter']);
+      $labOrders=$dao->getLabOrdersByEncounterId($_SESSION['encounter']);
       $labTotalBill=0;
 				if(count($labOrders)>0){
 					echo '<h2 class="form-signin-heading">Laboratory Bill</h2>';
@@ -165,7 +165,7 @@
           value="'.$order['con_time'].'">';
           echo '</div>';
           echo '<div style="clear:both"></div>';
-          $dispensedOrders=$fO->getLabOrdersDispensedByPrescriptionId($order['prescription_id']);
+          $dispensedOrders=$dao->getLabOrdersDispensedByPrescriptionId($order['prescription_id']);
           if(count($dispensedOrders)>0){
 						$_SESSION['lab_tests']=new BillPaymentCart;
             $prescriptionTotal=0;;
@@ -196,7 +196,7 @@
          <label for="total">Amount Paid</label>
          <input type="number" class="form-control" id="paid" name="paid" required="" />
          <label for="total">Balance</label>
-         <input type="number" class="form-control" id="balance" name="balance" readonly=""/>
+         <input type="number" class="form-control" id="balance" name="balance" min=0 value="" readonly=""/>
        </div>
        <div style="clear: both;"></br>
          <input type="submit" name="receive_payment" class="btn btn-lg btn-primary"

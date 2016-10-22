@@ -1,34 +1,37 @@
 <?PHP
-	require 'functions.php';
+	require 'data_access_object.php';
 	include('cartClass.php');
 	include('lab_test_cart.php');
-	$fO=new functions();
-	$fO->checkLogin();
+	$dao=new DAO();
+	$dao->checkLogin();
 	if (isset($_POST['save'])){
 		$i=0;
 		$j=0;
 		if(isset($_POST['admission'])){
-			$fO->doctorAllowAdmission($_SESSION['encounter']);
+			$dao->doctorAllowAdmission($_SESSION['encounter']);
 		}
-		$lastId=$fO->savePrescription($_POST['patient_id'],$_POST['prescription'],$_SESSION['log_user'],$_SESSION['encounter']);
-		$fO->seenDoctor($_SESSION['encounter'],$lastId);
+		if(isset($_POST['discharge'])){
+			$dao->doctorAllowDischarge($_SESSION['encounter']);
+		}
+		$lastId=$dao->savePrescription($_POST['patient_id'],$_POST['prescription'],$_SESSION['log_user'],$_SESSION['encounter']);
+		$dao->seenDoctor($_SESSION['encounter'],$lastId);
 		if(count($_POST['drug'])>0){
 		foreach($_POST['drug'] as $value) {
 			if(isset($_POST['drug'][$i]) && isset($_POST['dose'][$i]) && isset($_POST['duration'][$i])){
-				$fO->savePharmacyPrescriptionOrder($lastId,$_POST['drug'][$i],$_POST['dose'][$i],$_POST['duration'][$i]);
+				$dao->savePharmacyPrescriptionOrder($lastId,$_POST['drug'][$i],$_POST['dose'][$i],$_POST['duration'][$i]);
 			}
 			$i++;
 		}
-		$fO->updatePharmacyPatientStatus($lastId);
+		$dao->updatePharmacyPatientStatus($lastId);
 		}
 		if(count($_POST['test'])>0){
 		foreach($_POST['test'] as $value){
 			if(isset($_POST['test'][$j])){
-				$fO->saveLabTestPrescriptionOrder($lastId,$_POST['test'][$j]);
+				$dao->saveLabTestPrescriptionOrder($lastId,$_POST['test'][$j]);
 			}
 			$j++;
 		}
-		$fO->updateLabPatientStatus($lastId);
+		$dao->updateLabPatientStatus($lastId);
 		}
 		unset($_SESSION['encounter']);
 		unset($_SESSION['patient']);
@@ -38,7 +41,7 @@
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('New Appointment',0) ?>
+  <?PHP $dao->includeHead('New Appointment',0) ?>
 	<script>
 	function addrow(tableID) {
 		var table = document.getElementById(tableID);
@@ -152,6 +155,16 @@ if(location.hash) {
 $(document.body).on("click", "a[data-toggle]", function(event) {
 		location.hash = this.getAttribute("href");
 });
+$('#observation').change(function(){
+	$.ajax({
+ 	type:"GET",
+ 	url:"new_appointment.php?observation="+$(this).val(),
+ 	async:false,
+ 	success:function(result){
+ 	$("#cart_form").submit();
+ 	}
+ });
+});
 });
 $(window).on('popstate', function() {
 		var anchor = location.hash || $("a[data-toggle=tab]").first().attr("href");
@@ -160,7 +173,7 @@ $(window).on('popstate', function() {
 	</script>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(3);
+    <?PHP $dao->includeMenu(3);
     ?>
   	<div id="menu_main">
       <a href="manage_doctor.php">Patient List</a>
@@ -174,17 +187,15 @@ $(window).on('popstate', function() {
 				$_SESSION['patient_type']=$_GET['patientType'];
 			}
 			if(isset($_SESSION['patient']) && isset($_SESSION['encounter']) && isset($_SESSION['patient_type'])){
-        $patient=$fO->getPatientByID($_SESSION['patient']);
-				$encounter=$fO->getEncounterByID($_SESSION['encounter']);
+        $patient=$dao->getPatientByID($_SESSION['patient']);
+				$encounter=$dao->getEncounterByID($_SESSION['encounter']);
 				echo '<form class="form-signin" method="POST"  action="'.$_SERVER['PHP_SELF'].'" id="cart_form">';
 				if (!isset($_SESSION['drugs'])){
 					 $_SESSION['drugs'] = new Cart();
 				}
-				if(isset($_GET['edit_prescription'])){
-				}
 				if(isset($_GET['add_prescription_drug'])){
 				$SearchString =$_GET['add_prescription_drug'];
-				$drug=$fO->getInventoryItemByName($SearchString);
+				$drug=$dao->getInventoryItemByName($SearchString);
 				$AlreadyOnThisCart =0;
 				if (count($_SESSION['drugs']->LineItems)>0){
 					   foreach ($_SESSION['drugs']->LineItems AS $OrderItem)
@@ -193,7 +204,7 @@ $(window).on('popstate', function() {
 						    if ($OrderItem->StockID ==$drug['id'])
 								 {
 							     $AlreadyOnThisCart = 1;
-									 $fO->showMessage("drug already added on this list");
+									 $dao->showMessage("drug already added on this list");
 							    }
 						   }
 						 }
@@ -208,7 +219,7 @@ $(window).on('popstate', function() {
 				}
 				if(isset($_GET['add_prescription_test'])){
 				$SearchString =$_GET['add_prescription_test'];
-				$test=$fO->getSingleLabTestByName($SearchString);
+				$test=$dao->getSingleLabTestByName($SearchString);
 				$AlreadyOnThisCart =0;
 				if (count($_SESSION['tests']->LineItems)>0){
 					   foreach ($_SESSION['tests']->LineItems AS $OrderItem)
@@ -217,7 +228,7 @@ $(window).on('popstate', function() {
 						    if ($OrderItem->testID ==$test['lab_id'])
 								 {
 							     $AlreadyOnThisCart = 1;
-									 $fO->showMessage("test already added on this list");
+									 $dao->showMessage("test already added on this list");
 							    }
 						   }
 						 }
@@ -244,6 +255,9 @@ $(window).on('popstate', function() {
 				{
 					$_SESSION['tests']->remove_from_lab_cart($_GET['delete_test']);
 				}
+				if(isset($_GET['observation'])){
+					$_SESSION['drugs']->update_observation($_GET['observation']);
+				}
       ?>
       <form class="form-signin" method="POST"  action="<?php echo $_SERVER['PHP_SELF']?>">
         <h2 class="form-signin-heading">New Prescription</h2>
@@ -261,13 +275,19 @@ $(window).on('popstate', function() {
 					<input type="text" class="form-control" readonly="" value="<?php echo $encounter['pulse']?>">
 				</div>
 				<h3 style="margin-top:0px;">Observation</h3>
-        <textarea   name="prescription" class="prescription"  cols="15" rows="5" required>
+        <textarea  name="prescription" id="observation" class="prescription"  cols="15" rows="5" required>
+					<?php echo $_SESSION['drugs']->observation; ?>
         </textarea><br><br>
 				<div class="form-inline">
 					<ul class="nav nav-pills">
 						<li class="active"><a data-toggle="tab" href="#pharmacy"><span class="glyphicon glyphicon-plus">Drug Order</span></a></li>
 						<li><a data-toggle="tab" href="#lab"><span class="glyphicon glyphicon-plus">Lab Test Order</span></a></li>
-						<li><div class="checkbox-inline"><label><input type="checkbox" name="admission" value="1">Admit Patient</label></div></li>
+						<?php if($encounter['admitted']==1){?>
+							<li><div class="checkbox-inline"><label><input type="checkbox" name="discharge" value="1">Allow Discharge</label></div></li>
+						<?php }
+						else{ ?>
+							<li><div class="checkbox-inline"><label><input type="checkbox" name="admission" value="1">Admit Patient</label></div></li>
+						<?php }?>
 					</ul>
 				</div>
 				<div class="tab-content">
@@ -292,7 +312,7 @@ $(window).on('popstate', function() {
  				 </td>
 				 <?php
 				 echo '<td>';
-				 $doses=$fO->getAllDose();
+				 $doses=$dao->getAllDose();
 				 echo '<select class="form-control dose" id="dose[]" name="dose[]" style="margin-right:20px;margin-top:10px;">';
 				 foreach($doses as $dose){
 					 if($dose['name']==$drugOrder->dose){
@@ -305,7 +325,7 @@ $(window).on('popstate', function() {
 				 }
 				 echo '</select></td>';
 				 echo '<td>';
- 				 $durations=$fO->getAllDurations();
+ 				 $durations=$dao->getAllDurations();
  				 echo '<select class="form-control duration" id="duration[]" name="duration[]" style="margin-right:20px;margin-top:10px;">';
  				 foreach($durations as $duration){
 					 if($duration['name']==$drugOrder->duration){

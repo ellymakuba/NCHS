@@ -1,34 +1,33 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
-  //Generate timestamp
-	$timestamp = time();
-	//CREATE-Button
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
+	$pageSecurity=12;
 	if (isset($_POST['save'])){
 		if(isset($_POST['name']) && isset($_POST['age']) && isset($_POST['blood_group']) && isset($_POST['phone']) && isset($_POST['address'])){
-			$fO->savePatient($_POST['name'],$_POST['age'],$_POST['blood_group'],$_POST['phone'],$_POST['address']);
+			$dao->savePatient($_POST['name'],$_POST['age'],$_POST['blood_group'],$_POST['phone'],$_POST['address']);
 		}
 	}
   if (isset($_POST['edit'])){
 		if(isset($_POST['name']) && isset($_POST['age']) && isset($_POST['blood_group']) && isset($_POST['phone']) && isset($_POST['address'])){
-			$fO->updatePatient($_SESSION['patient_id'],$_POST['name'],$_POST['age'],$_POST['blood_group'],$_POST['phone'],$_POST['address']);
+			$dao->updatePatient($_SESSION['patient_id'],$_POST['name'],$_POST['age'],$_POST['blood_group'],$_POST['phone'],$_POST['address']);
 		}
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Patient',0) ?>
+  <?PHP $dao->includeHead('Patient',0) ?>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(1); ?>
+    <?PHP $dao->includeMenu(1); ?>
   	<div id="menu_main">
       <a href="patient_list.php">Patient List</a>
       <a href="new_patient.php" id="item_selected">Patient</a>
       </div>
       <?php
-			$bloodGroups=$fO->getAllBloodGroups();
+			if(in_array($pageSecurity, $_SESSION['AllowedPageSecurityTokens'])){
+			$bloodGroups=$dao->getAllBloodGroups();
 			if(isset($_REQUEST['SelectedPatient'])){
-        $patient=$fO->getPatientByID($_REQUEST['SelectedPatient']);
+        $patient=$dao->getPatientByID($_REQUEST['SelectedPatient']);
         $_SESSION['patient_id']=$_REQUEST['SelectedPatient'];
       ?>
 			<form class="form-signin" method="POST"  action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -75,7 +74,14 @@
 			    <input type="submit" name="save" class="btn btn-lg btn-primary" value="Add Patient"
 			    style="display: block; margin: 0 auto;width:200px;"></input>
 			</form>
-</div>
-      <?php }?>
+		</div>
+    <?php }
+	}
+	else{
+		echo '<div class="alert alert-danger">
+			<strong>You do not have permission to access this page, please confirm with the system administrator</strong>
+		</div>';
+	}
+	require 'footer.php';?>
   </body>
   </html>

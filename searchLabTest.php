@@ -1,9 +1,9 @@
 <?php
-require 'functions.php';
-$fO=new functions();
-$fO->checkLogin();
+require 'data_access_object.php';
+$dao=new DAO();
+$dao->checkLogin();
 $q=$_GET['term'];
-$tests=$fO->getLabTestByName($q);
+$tests=$dao->getLabTestByName($q);
 foreach($tests as $test)
 {
  $obj[]=array('id' => $test['lab_id'],'test' => $test['test'],'cost' => $test['cost']);

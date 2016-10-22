@@ -1,7 +1,7 @@
 <?PHP
 	session_start();
-	require 'functions.php';
-	$functionObject=new functions();
+	require 'data_access_object.php';
+	$dao=new DAO();;
 	
 	//Record logout time for this session
 	/*$logrec_end = time();
@@ -9,5 +9,5 @@
 	$query_update_logrec = mysql_query($sql_update_logrec);
 	checkSQL($query_update_logrec);*/
 	
-	$functionObject->logout();
+	$dao->logout();
 ?>

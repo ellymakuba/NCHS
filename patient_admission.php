@@ -1,20 +1,20 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 	if (isset($_POST['admit'])){
 		if(isset($_SESSION['encounter']) && isset($_SESSION['patient']) && isset($_POST['no_of_admissions'])
 		&& isset($_POST['ward']) && isset($_POST['bed_no'])){
 			if(isset($_POST['insurance_patient'])){
-				$fO->admitPatient($_SESSION['encounter'],$_SESSION['patient'],$_POST['allergy'],$_POST['insurance'],
+				$dao->admitPatient($_SESSION['encounter'],$_SESSION['patient'],$_POST['allergy'],$_POST['insurance'],
 				$_POST['no_of_admissions'],$_POST['ward'],$_POST['bed_no'],1);
 			}
 			else{
-				$fO->admitPatient($_SESSION['encounter'],$_SESSION['patient'],$_POST['allergy'],'',
+				$dao->admitPatient($_SESSION['encounter'],$_SESSION['patient'],$_POST['allergy'],'',
 				$_POST['no_of_admissions'],$_POST['ward'],$_POST['bed_no'],0);
 			}
 	}
-	$fO->updateToInpatient($_SESSION['encounter']);
+	$dao->updateToInpatient($_SESSION['encounter']);
 	unset($_SESSION['encounter']);
 	unset($_SESSION['patient']);
 	header('Location:manage_nurse.php');
@@ -23,7 +23,7 @@
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Patient Admission',0) ?>
+  <?PHP $dao->includeHead('Patient Admission',0) ?>
 	<script>
 	$(document).ready(function(){
 		$('#company').hide();
@@ -37,7 +37,7 @@
 	</script>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(2); ?>
+    <?PHP $dao->includeMenu(2); ?>
   	<div id="menu_main">
       <a href="manage_nurse.php">Active Encounters</a>
 			<a href="admission_list.php">Admission List</a>
@@ -49,8 +49,8 @@
 				$_SESSION['encounter']=$_REQUEST['selectedEncounter'];
 			}
 			if(isset($_SESSION['patient'])){
-				$encounter=$fO->getEncounterByID($_SESSION['encounter']);
-				$patient=$fO->getPatientByID($_SESSION['patient']);
+				$encounter=$dao->getEncounterByID($_SESSION['encounter']);
+				$patient=$dao->getPatientByID($_SESSION['patient']);
 				if(isset($_REQUEST['SelectedAdmission'])){
         $_SESSION['patient_id']=$_REQUEST['SelectedPatient'];
       ?>
@@ -110,7 +110,7 @@
 			<select name="insurance" class="form-control" style="width:90%;float:right;" >
 				<option disabled selected>Select Insurance</option>
 			<?php
-			$insurance_companies=$fO->getAllInsuranceCompanies();
+			$insurance_companies=$dao->getAllInsuranceCompanies();
 			foreach($insurance_companies as $company){
 				echo '<option value='.$company['id'].'>'.$company['name'].'</option>';
 			}
@@ -128,7 +128,7 @@
 			<select  name="allergy" class="form-control" style="width:90%;float:right;" placeholder="Allergy">
 			<option disabled selected>Select Allergy</option>
 			<?php
-			$allergies=$fO->getAllAllergies();
+			$allergies=$dao->getAllAllergies();
 			foreach($allergies as $allergy){
 				echo '<option value='.$allergy['id'].'>'.$allergy['name'].'</option>';
 			}
@@ -141,7 +141,7 @@
 			<select  name="ward" class="form-control"  style="width:90%;float:right;" placeholder="ward" required>
 				<option disabled selected>Select Ward</option>
 			<?php
-			$wards=$fO->getAllWards();
+			$wards=$dao->getAllWards();
 			foreach($wards as $ward){
 				echo '<option value='.$ward['id'].'>'.$ward['name'].'</option>';
 			}

@@ -1,9 +1,9 @@
 
 <?PHP
  include 'header.inc';
- 	require 'functions.php';
- 	$fO=new functions();
- 	$fO->checkLogin();
+ 	require 'data_access_object.php';
+ 	$dao=new DAO();
+ 	$dao->checkLogin();
 ?>
     <h1 class="sub-header">Manage settings</h1><br>
       <ul class="nav nav-pills">
@@ -202,7 +202,7 @@
         </tr>
         <?php
         if(isset($_POST['search_drug'])){
-          $drugs=$fO->getDrugName($_POST['search_string']);
+          $drugs=$dao->getDrugName($_POST['search_string']);
           foreach($drugs as $drug){
             printf("<tr><td><a data-toggle=\"tab\" href=\"#add_drug?SelectedDrug=%s\">" .$drug['med_id'] . "</a></td>
 					<td>%s</td>
@@ -221,7 +221,7 @@
           }
         }
         else{
-          $drugs=$fO->getAllDrugs();
+          $drugs=$dao->getAllDrugs();
           foreach($drugs as $drug){
             printf("<tr><td><a data-toggle=\"tab\" href=\"#add_drug?SelectedDrug=%s\">" .$drug['med_id'] . "</a></td>
 					<td>%s</td>

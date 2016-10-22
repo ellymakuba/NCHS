@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 ?>
 <html>
-	<?PHP $fO->includeHead('Nurse Module',1); ?>
+	<?PHP $dao->includeHead('Nurse Module',1); ?>
 	<body class="container">
 		<?PHP
-				$fO->includeMenu(2);
+				$dao->includeMenu(2);
 		?>
 		<div id="menu_main">
 			<a href="nurse_patients.php" id="item_selected">Patients</a>
@@ -38,7 +38,7 @@
     </tr>
     <?php
     if(isset($_REQUEST['srch-term'])){
-      $patients=$fO->getNurseSinglePatient($_SESSION['log_user'],$_REQUEST['srch-term']);
+      $patients=$dao->getNurseSinglePatient($_SESSION['log_user'],$_REQUEST['srch-term']);
 			$i=0;
 			foreach($patients as $patient){
 				$i=$i+1;
@@ -76,7 +76,7 @@
       }
     }
     else{
-      $patients=$fO->getNurseAllPatients($_SESSION['log_user']);
+      $patients=$dao->getNurseAllPatients($_SESSION['log_user']);
 			$i=0;
 			foreach($patients as $patient){
 				$i=$i+1;

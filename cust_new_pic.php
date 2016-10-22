@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <?PHP
-	require 'functions.php';
+	require 'data_access_object.php';
 	require 'function_pic.php';
 	checkLogin();
 	connect();

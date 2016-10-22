@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 ?>
 <html>
-	<?PHP $fO->includeHead('Pharmacy Module',1); ?>
+	<?PHP $dao->includeHead('Pharmacy Module',1); ?>
 	<body class="container">
 		<?PHP
-				$fO->includeMenu(5);
+				$dao->includeMenu(5);
 		?>
 		<div id="menu_main">
 			<a href="manage_pharmacy.php" id="item_selected">Patient Queue</a>
@@ -29,11 +29,11 @@
       <th>#</th>
       <th>Patient name</th>
       <th>Remarks</th>
-			<th>Prescription</th>
+			<th>Action</th>
     </tr>
     <?php
     if(isset($_REQUEST['srch-term'])){
-      $patients=$fO->getPharmacyQueue($_SESSION['log_user'],$_REQUEST['srch-term']);
+      $patients=$dao->getPharmacyQueue($_SESSION['log_user'],$_REQUEST['srch-term']);
 			$i=0;
 			foreach($patients as $patient){
 				$i=$i+1;
@@ -47,7 +47,7 @@
       }
     }
     else{
-      $patients=$fO->getAllPharmacyQueue($_SESSION['log_user']);
+      $patients=$dao->getAllPharmacyQueue($_SESSION['log_user']);
 			$i=0;
 			foreach($patients as $patient){
 				$i=$i+1;

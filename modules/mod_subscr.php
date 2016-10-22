@@ -1,5 +1,5 @@
 <?PHP
-if (($result_cust['cust_lastsub']+$functionObject->convertDays(365)) < $timestamp ){ 
+if (($result_cust['cust_lastsub']+$dao->convertDays(365)) < $timestamp ){ 
 	$visibility = 'block';
 	if($result_cust['cust_active'] == 1) showMessage('This Client needs to renew his / her Subscription!');
 }

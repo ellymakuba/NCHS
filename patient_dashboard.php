@@ -1,14 +1,14 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 	if (isset($_POST['admit'])){
 	}
   if (isset($_POST['edit'])){
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Patient Dashboard',0) ?>
+  <?PHP $dao->includeHead('Patient Dashboard',0) ?>
 	<script>
 	$(document).ready(function(){
 		$('#company').hide();
@@ -22,7 +22,7 @@
 	</script>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(2); ?>
+    <?PHP $dao->includeMenu(2); ?>
   	<div id="menu_main">
       <a href="manage_nurse.php">Active Encounters</a>
 			<a href="admission_list.php">Admission List</a>
@@ -34,8 +34,8 @@
 				$_SESSION['encounter']=$_REQUEST['selectedEncounter'];
 			}
 			if(isset($_SESSION['encounter'])){
-				$encounter=$fO->getEncounterByID($_SESSION['encounter']);
-				$patient=$fO->getPatientByID($encounter['patient_id']);
+				$encounter=$dao->getEncounterByID($_SESSION['encounter']);
+				$patient=$dao->getPatientByID($encounter['patient_id']);
 				?>
 			<form class="form-signin" method="POST"  action="<?php echo $_SERVER['PHP_SELF']; ?>">
 			<h2 class="form-signin-heading">Patient Dashboard</h2>
@@ -68,7 +68,7 @@
 				<input type="text" class="form-control" readonly="" value="<?php echo $encounter['pulse']?>">
 			</div>
 			<?php
-			$encounterList=$fO->getPatientHistory($patient['patient_id']);
+			$encounterList=$dao->getPatientHistory($patient['patient_id']);
 			if(count($encounterList)>0){
 				echo '<h2 class="form-signin-heading">Patient History</h2>';
 				echo '<table class="table table-striped" style="border-spacing:2px;border-collapse:separate;width:100%;">';
@@ -87,7 +87,7 @@
 			}
 			echo '</table>';
 		}
-			$consultations=$fO->getPharmacyOrdersByEncounterId($_SESSION['encounter']);
+			$consultations=$dao->getPharmacyOrdersByEncounterId($_SESSION['encounter']);
 			if(count($consultations)>0){
 				echo '<h2 class="form-signin-heading">Doctor Review</h2>';
 				echo '<table class="table table-striped" style="border-spacing:2px;border-collapse:separate;width:100%;">';
@@ -117,14 +117,14 @@
       </div>
       <div class="modal-body" id="modal-display">
         <pre>'.$consultation['observation'].'<pre>';
-				$prescriptions=$fO->getPharmacyDispensedByEncounterId($consultation['encounter_id']);
+				$prescriptions=$dao->getPharmacyDispensedByEncounterId($consultation['encounter_id']);
 				if(count($prescriptions)){
 					echo '<h2>Pharmacy</h2>';
 				foreach($prescriptions as $prescription){
 					echo '<pre>'.$prescription['dname'].' - '.$prescription['dose'].'-'.$prescription['duration'].'</pre>';
 				}
 				}
-				$labTests=$fO->getLabTestsByEncounterId($consultation['encounter_id']);
+				$labTests=$dao->getLabTestsByEncounterId($consultation['encounter_id']);
 				if(count($labTests)){
 					echo '<h2>Lab Tests</h2>';
 				foreach($labTests as $labTest){
@@ -141,7 +141,7 @@
 			}
 			echo '</table>';
 		}
-				$dispensedOrders=$fO->getPharmacyDispensedByEncounterId($_SESSION['encounter']);
+				$dispensedOrders=$dao->getPharmacyDispensedByEncounterId($_SESSION['encounter']);
 				if(count($dispensedOrders)>0){
 					echo '<h2 class="form-signin-heading">Pharmacy List</h2>';
 					echo '<table class="table table-striped" style="border-spacing:2px;border-collapse:separate;width:100%;">';

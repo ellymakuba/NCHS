@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <?PHP
 session_start();
-require 'functions.php';
+require 'data_access_object.php';
 
 // Script Configuration
  $fileSQL = 'database/webafriqdigitalpatners.sql';

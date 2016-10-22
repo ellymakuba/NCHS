@@ -1,7 +1,7 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
   //Generate timestamp
 	$timestamp = time();
 	//CREATE-Button
@@ -10,16 +10,16 @@
 		foreach($_POST['drug'] as $value) {
 			if(isset($_POST['drug'][$i]) && isset($_POST['dose'][$i]) && isset($_POST['duration'][$i])
 			&& isset($_POST['quantity'][$i]) && isset($_POST['amount'][$i]) && isset($_SESSION['prescription'])){
-				$fO->billPharmacyPrescription($_SESSION['prescription'],$_POST['drug'][$i],$_POST['dose'][$i],$_POST['duration'][$i],
+				$dao->billPharmacyPrescription($_SESSION['prescription'],$_POST['drug'][$i],$_POST['dose'][$i],$_POST['duration'][$i],
 			$_POST['quantity'][$i],$_POST['price'][$i],$_POST['amount'][$i],$_SESSION['log_user']);
 			}
 			$i++;
 		}
-		$fO->pharmacyBilled($_SESSION['prescription']);
+		$dao->pharmacyBilled($_SESSION['prescription']);
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Bill Drugs',0) ?>
+  <?PHP $dao->includeHead('Bill Drugs',0) ?>
 	<script>
 	function addrow(tableID) {
 		var table = document.getElementById(tableID);
@@ -79,7 +79,7 @@ $("#paid").change(function(){
 	</script>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(5);
+    <?PHP $dao->includeMenu(5);
     ?>
   	<div id="menu_main">
       <a href="manage_pharmacy.php">Drug Orders</a>
@@ -87,9 +87,9 @@ $("#paid").change(function(){
       </div>
       <?php if(isset($_GET['selectedPrescription']) && isset($_GET['selectedPatient'])){
         $selectedPatientId=$_GET['selectedPatient'];
-        $patient=$fO->getPatientByID($selectedPatientId);
-        $observation=$fO->getPrescriptionById($_GET['selectedPrescription']);
-        $drugs=$fO->getPrescriptionDetailsById($_GET['selectedPrescription']);
+        $patient=$dao->getPatientByID($selectedPatientId);
+        $observation=$dao->getPrescriptionById($_GET['selectedPrescription']);
+        $drugs=$dao->getPrescriptionDetailsById($_GET['selectedPrescription']);
 				$_SESSION['prescription']=$_GET['selectedPrescription'];
       ?>
       <form class="form-signin" method="POST"  action="<?php echo $_SERVER['PHP_SELF']?>">
@@ -124,7 +124,7 @@ $("#paid").change(function(){
 					style="margin-right:20px;margin-top:10px;" readonly=""/></td>
 					<td><select  class="form-control" name="batch_no[]" style="margin-right:20px;margin-top:10px;" required />
 					<?php
-						$batches=$fO->getDrugActiveBatches($drug['id']);
+						$batches=$dao->getDrugActiveBatches($drug['id']);
 						foreach($batches as $batch){
 							echo '<option value='.$batch['batch_no'].'>'.$batch['batch_no'].'</option>';
 						}

@@ -1,13 +1,13 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
   ?>
   <html>
-  <?PHP $fO->includeHead('Encounter List',0) ?>
+  <?PHP $dao->includeHead('Encounter List',0) ?>
   </head>
   <body class="container">
-  <?PHP $fO->includeMenu(1); ?>
+  <?PHP $dao->includeMenu(1); ?>
   <div id="menu_main">
     <a href="patient_list.php">Patient List</a>
     <a href="new_patient.php">Patient</a>
@@ -38,7 +38,7 @@
   </tr>
   <?php
   if(isset($_REQUEST['srch-term'])){
-    $encounters=$fO->getPatientEncounters($_REQUEST['srch-term']);
+    $encounters=$dao->getPatientEncounters($_REQUEST['srch-term']);
     foreach($encounters as $encounter){
       printf("<tr><td><a href=\"new_encounter.php?SelectedEncounter=%s\">" .$encounter['encounter_id'] . "</a></td>
     <td>%s</td>
@@ -57,7 +57,7 @@
     }
   }
   else{
-    $encounters=$fO->getAllEncounters();
+    $encounters=$dao->getAllEncounters();
     foreach($encounters as $encounter){
       printf("<tr><td><a href=\"new_encounter.php?SelectedEncounter=%s\">" .$encounter['encounter_id'] . "</a></td>
     <td>%s</td>

@@ -1,10 +1,10 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 	if (isset($_POST['save'])){
     if(isset($_POST['weight']) && isset($_POST['temperature']) && isset($_POST['weight'])){
-      $fO->saveEncounter($_POST['weight'],$_POST['temperature'],$_POST['blood_pressure'],$_POST['pulse'],
+      $dao->saveEncounter($_POST['weight'],$_POST['temperature'],$_POST['blood_pressure'],$_POST['pulse'],
       $_POST['respiration'],$_SESSION['log_user'],$_SESSION['patient']);
     }
 		unset($_SESSION['patient']);
@@ -13,16 +13,16 @@
 	}
   if (isset($_POST['edit'])){
 		if(isset($_POST['weight']) && isset($_POST['temperature']) && isset($_POST['weight'])){
-		$fO->updateEncounter($_POST['weight'],$_POST['temperature'],$_POST['blood_pressure'],$_POST['pulse'],
+		$dao->updateEncounter($_POST['weight'],$_POST['temperature'],$_POST['blood_pressure'],$_POST['pulse'],
 		$_POST['respiration'],$_SESSION['log_user'],$_SESSION['encounter']);
 	}
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Patient Encounter',0) ?>
+  <?PHP $dao->includeHead('Patient Encounter',0) ?>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(1); ?>
+    <?PHP $dao->includeMenu(1); ?>
   	<div id="menu_main">
       <a href="patient_list.php">Patient List</a>
       <a href="new_patient.php">Patient</a>
@@ -32,11 +32,11 @@
       <?php
 			if(isset($_GET['SelectedPatient'])){
 				$_SESSION['patient']=$_GET['SelectedPatient'];
-				$patient=$fO->getPatientByID($_SESSION['patient']);
+				$patient=$dao->getPatientByID($_SESSION['patient']);
 			}
 			if(isset($_SESSION['patient'])){
 			if(isset($_REQUEST['SelectedEncounter'])){
-        $encounter=$fO->getEncounterByID($_REQUEST['SelectedEncounter']);
+        $encounter=$dao->getEncounterByID($_REQUEST['SelectedEncounter']);
         $_SESSION['encounter']=$_REQUEST['SelectedEncounter'];
       ?>
 			<form class="form-signin" method="POST"  action="<?php echo $_SERVER['PHP_SELF']; ?>">

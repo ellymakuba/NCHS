@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 ?>
 <html>
-	<?PHP $fO->includeHead('Laboratory Module',1); ?>
+	<?PHP $dao->includeHead('Laboratory Module',1); ?>
 	<body class="container">
 		<?PHP
-				$fO->includeMenu(4);
+				$dao->includeMenu(4);
 		?>
 		<div id="menu_main">
 			<a href="manage_laboratory.php" id="item_selected">Patient Queue</a>
@@ -33,7 +33,7 @@
     </tr>
     <?php
     if(isset($_REQUEST['srch-term'])){
-      $patients=$fO->getLaboratoryQueue($_SESSION['log_user'],$_REQUEST['srch-term']);
+      $patients=$dao->getLaboratoryQueue($_SESSION['log_user'],$_REQUEST['srch-term']);
 			$i=0;
 			foreach($patients as $patient){
 				$i=$i+1;
@@ -47,7 +47,7 @@
       }
     }
     else{
-      $patients=$fO->getAllLabQueue();
+      $patients=$dao->getAllLabQueue();
 			$i=0;
 			foreach($patients as $patient){
 				$i=$i+1;

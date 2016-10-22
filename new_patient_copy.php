@@ -1,7 +1,7 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
   //Generate timestamp
 	$timestamp = time();
 	//CREATE-Button
@@ -11,16 +11,16 @@
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Patient',0) ?>
+  <?PHP $dao->includeHead('Patient',0) ?>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(1); ?>
+    <?PHP $dao->includeMenu(1); ?>
   	<div id="menu_main">
       <a href="patient_list.php">Patient List</a>
       <a href="new_patient.php" id="item_selected">Patient</a>
       </div>
       <?php if(isset($_REQUEST['SelectedPatient'])){
-        $drug=$fO->getDrugById($_REQUEST['SelectedPatient']);
+        $drug=$dao->getDrugById($_REQUEST['SelectedPatient']);
         $_SESSION['patient_id']=$_REQUEST['SelectedPatient'];
       ?>
       <div class="row">

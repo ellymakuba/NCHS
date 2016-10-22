@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <?PHP
-	require 'functions.php';
+	require 'data_access_object.php';
 	function CryptPass($Password ) {
 		return sha1($Password);
     }
@@ -9,7 +9,7 @@
 	connect();
 	$user_id = 0;
 	$employee = 0;
-	
+
 	//Select all users from USER
 	$users = array();
 	$user_names = array();
@@ -20,18 +20,18 @@
 		$users[] = $row_users;
 		$user_names[] = $row_users['user_name'];
 	}
-	
+
 	//Select all usergroups from UGROUP
 	$sql_ugroup = "SELECT ugroup_id, ugroup_name FROM ugroup";
 	$query_ugroup = mysql_query($sql_ugroup);
 	checkSQL($query_ugroup);
-	
+
 	// Select all employees from EMPLOYEE
 	$sql_employees = "SELECT empl_id, empl_name FROM employee WHERE empl_id != 0";
 	$query_employees = mysql_query($sql_employees);
 	checkSQL($query_employees);
 
-	// Select employees from EMPLOYEE who are already associated with a user 
+	// Select employees from EMPLOYEE who are already associated with a user
 	$sql_empl_assoc = "SELECT empl_id FROM employee WHERE empl_id != 0 AND empl_id IN (SELECT empl_id FROM user)";
 	$query_empl_assoc = mysql_query($sql_empl_assoc);
 	checkSQL($query_empl_assoc);
@@ -39,7 +39,7 @@
 	while($row_empl_assoc = mysql_fetch_assoc($query_empl_assoc)){
 		$empl_assoc[] = $row_empl_assoc['empl_id'];
 	}
-	
+
 	//Set heading and variables according to selection
 	if(isset($_GET['user'])){
 		$user_id = sanitize($_GET['user']);
@@ -54,7 +54,7 @@
 		$heading = "Edit User";
 	}
 	else $heading = "Create User";
-	
+
 	//SAVE Button
 	if(isset($_POST["save_changes"])){
 		//Sanitize user input
@@ -65,7 +65,7 @@
 		$ugroup = sanitize($_POST['ugroup']);
 		if($user_id == 1) $ugroup = 1;
 		$timestamp = time();
-		
+
 		if($user_id == 0){
 			// Insert new user into USER
 			$sql_user_ins = "INSERT INTO user (user_name, user_pw, ugroup_id, empl_id, user_created) VALUES ('$user_name', '$user_pw', '$ugroup', '$empl_id', '$timestamp')";
@@ -90,15 +90,15 @@
 				fail += validatePw(form.user_pw.value, form.user_pw_conf.value)
 				fail += validateEmployee(form.empl_id.value, <?PHP echo json_encode($empl_assoc); ?>, <?PHP echo $employee; ?>)
 				if (fail == "") return true
-				else { 
-					alert(fail); 
+				else {
+					alert(fail);
 					return false
 				}
 			}
 		</script>
 		<script src="functions_validate.js"></script>
 	</head>
-	
+
 	<body>
 		<!-- MENU -->
 		<?PHP includeMenu(6); ?>
@@ -110,15 +110,15 @@
 			<a href="set_ugroup.php">Usergroups</a>
 			<a href="set_logrec.php">Log Records</a>
 		</div>
-		
+
 		<!-- LEFT SIDE: Create New User Form -->
 		<div class="content_left">
 			<div class="content_settings" style="text-align:left; width:80%;">
-				
+
 				<p class="heading"><?PHP echo $heading; ?></p>
-			
+
 				<form action="set_user.php" method="post" onSubmit="return validate(this)">
-				
+
 					<table id="tb_set" style="margin:auto;">
 						<tr>
 							<td>Username</td>
@@ -164,14 +164,14 @@
 					</table>
 					<input type="submit" name="save_changes" value="Save Changes" />
 					<input type="hidden" name="user_id" value="<?PHP echo $user_id; ?>" />
-				</form>			
+				</form>
 			</div>
 		</div>
-		
+
 		<!-- RIGHT SIDE: List of Users -->
 		<div class="content_right">
 			<form action="set_ugroup.php" method="post">
-				<table id="tb_table">				
+				<table id="tb_table">
 					<colgroup>
 						<col width="26%">
 						<col width="26%">
@@ -187,11 +187,11 @@
 						<th>User Group</th>
 						<th>Employee</th>
 						<th>Changed</th>
-						<th>Edit</th> 
+						<th>Edit</th>
 					</tr>
 					<?PHP
 					$color=0;
-					foreach ($users as $row_user){					
+					foreach ($users as $row_user){
 						tr_colored($color);		//Alternating row colors
 						echo '<td>'.$row_user['user_name'].'</td>
 									<td>'.$row_user['ugroup_name'].'</td>

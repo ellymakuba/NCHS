@@ -1,16 +1,16 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 	if (isset($_POST['save'])){
 		if(isset($_POST['entry_date']) && isset($_POST['supplier'])){
 			$entry_date=date('Y-m-d',strtotime($_POST['entry_date']));
-			$lastId=$fO->savePurchaseOrder($entry_date,$_POST['supplier']);
+			$lastId=$dao->savePurchaseOrder($entry_date,$_POST['supplier']);
 		$i=0;
 		foreach($_POST['drug'] as $value) {
 			if(isset($_POST['drug'][$i]) && isset($_POST['quantity'][$i]) && isset($_POST['expiry_date'][$i]) && isset($_POST['batch_no'][$i])){
 				$expiry_date=date('Y-m-d',strtotime($_POST['expiry_date'][$i]));
-				$fO->saveInventory($lastId,$_POST['drug'][$i],$_POST['quantity'][$i],$expiry_date,$_POST['batch_no'][$i]);
+				$dao->saveInventory($lastId,$_POST['drug'][$i],$_POST['quantity'][$i],$expiry_date,$_POST['batch_no'][$i]);
 			}
 			$i++;
 		}
@@ -18,7 +18,7 @@
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Manage Inventory',0) ?>
+  <?PHP $dao->includeHead('Manage Inventory',0) ?>
 	<script>
 	var autocomp_opt={
 	 source:function(request,response){
@@ -119,7 +119,7 @@ $(document).on("click", "#save", function(e) {
 	</script>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(8);
+    <?PHP $dao->includeMenu(8);
     ?>
   	<div id="menu_main">
       <a href="manage_inventory.php" id="item_selected">Purchase Order</a>
@@ -133,7 +133,7 @@ $(document).on("click", "#save", function(e) {
         <select  name="supplier" class="form-control" required>
           <option disabled selected>Select Supplier</option>
 					<?php
-					$suppiers=$fO->getAllSuppliesrs();
+					$suppiers=$dao->getAllSuppliesrs();
 					foreach($suppiers as $suppier){
 					echo '<option value="'.$suppier['id'].'">'.$suppier['name'].'</option>';
 						}

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <?PHP
-require 'functions.php';
+require 'data_access_object.php';
 header ('refresh:7; url=index.php');
 ?>
 <html>

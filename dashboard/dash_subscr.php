@@ -1,8 +1,8 @@
 <?PHP
 //Select Subscription Defaulters from CUSTOMER
 
-$last_subscr = time() - $functionObject->convertDays(365); //Seconds for 365 days
-$sql_subscrdef = $functionObject->getCustomerLastSubscription($last_subscr);
+$last_subscr = time() - $dao->convertDays(365); //Seconds for 365 days
+$sql_subscrdef = $dao->getCustomerLastSubscription($last_subscr);
 ?>
 <table id="tb_table">
 	<colgroup>

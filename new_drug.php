@@ -1,27 +1,27 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
   //Generate timestamp
 	$timestamp = time();
 	//CREATE-Button
 	if (isset($_POST['add_drug'])){
 		if(isset($_POST['name']) && isset($_POST['bPrice']) && isset($_POST['sPrice'])
 		&& isset($_POST['description']) && isset($_POST['company']) && isset($_POST['category'])){
-		$fO->addNewDrug($_POST['name'],$_POST['bPrice'],$_POST['sPrice'],$_POST['description'],
+		$dao->addNewDrug($_POST['name'],$_POST['bPrice'],$_POST['sPrice'],$_POST['description'],
 		$_POST['company'],$_POST['category']);
 		}
 	}
   if (isset($_POST['edit_drug'])){
 		if(isset($_POST['name']) && isset($_POST['bPrice']) && isset($_POST['sPrice'])
 		&& isset($_POST['description']) && isset($_POST['company']) && isset($_POST['category'])){
-		$fO->updateDrug($_SESSION['drug_id'],$_POST['name'],$_POST['bPrice'],$_POST['sPrice'],$_POST['description'],
+		$dao->updateDrug($_SESSION['drug_id'],$_POST['name'],$_POST['bPrice'],$_POST['sPrice'],$_POST['description'],
 		$_POST['company'],$_POST['category']);
 		}
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('New Drug',0) ?>
+  <?PHP $dao->includeHead('New Drug',0) ?>
 	<script>
 	 $(document).ready(function(){
 		 $('#expiry_date').datepicker();
@@ -29,7 +29,7 @@
 	</script>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(9); ?>
+    <?PHP $dao->includeMenu(9); ?>
   	<div id="menu_main">
       <a href="cust_search.php">Users</a>
       <a href="cust_search.php">Roles</a>
@@ -44,7 +44,7 @@
       <a href="cust_search.php">Rooms</a>
       </div>
       <?php if(isset($_REQUEST['SelectedDrug'])){
-        $drug=$fO->getDrugById($_REQUEST['SelectedDrug']);
+        $drug=$dao->getDrugById($_REQUEST['SelectedDrug']);
         $_SESSION['drug_id']=$_REQUEST['SelectedDrug'];
       ?>
       <form class="form-signin" method="POST"  action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -53,7 +53,7 @@
 				<select  name="category" class="form-control" required>
 					<option disabled selected>category</option>
 					<?php
-					$categories=$fO->getAllDrugCategory();
+					$categories=$dao->getAllDrugCategory();
 					foreach($categories as $category){
 						if($category['id']==$drug['category']){
 							echo '<option selected value="'.$category['id'].'">'.$category['name'].'</option>';
@@ -78,7 +78,7 @@
 					<select  name="category" class="form-control" required>
 						<option disabled selected>category</option>
 						<?php
-						$categories=$fO->getAllDrugCategory();
+						$categories=$dao->getAllDrugCategory();
 						foreach($categories as $category){
 						echo '<option value="'.$category['id'].'">'.$category['name'].'</option>';
 						}

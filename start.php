@@ -1,15 +1,15 @@
 <!DOCTYPE HTML>
 <?PHP
-	require 'functions.php';
-	$functionObject=new functions();
-	$functionObject->checkLogin();
-	$functionObject->getSettings();
+	require 'data_access_object.php';
+	$dao=new DAO();;
+	$dao->checkLogin();
+	$dao->getSettings();
 ?>
 <html>
-	<?PHP $functionObject->includeHead('Hospital Management',1); ?>
+	<?PHP $dao->includeHead('Hospital Management',1); ?>
 	<body>
 		<?PHP
-				$functionObject->includeMenu(1);
+				$dao->includeMenu(1);
 		?>
 		<!-- MENU MAIN -->
 		<div id="menu_main">
@@ -28,7 +28,7 @@
 		</div>
 
 		<!-- Logout Reminder Message -->
-		<?PHP	$functionObject->checkLogout();	?>
+		<?PHP	$dao->checkLogout();	?>
 
 	</body>
 </html>

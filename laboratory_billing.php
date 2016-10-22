@@ -1,23 +1,23 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
 	if (isset($_POST['bill'])){
 		$i=0;
 		if(isset($_POST['test'])){
 		foreach($_POST['test'] as $value) {
 			if(isset($_POST['test'][$i]) && isset($_POST['cost'][$i]) && isset($_POST['result'][$i])){
-				$fO->billLabTestOrder($_SESSION['prescription'],$_POST['test'][$i],$_POST['cost'][$i],$_POST['result'][$i],$_SESSION['log_user']);
+				$dao->billLabTestOrder($_SESSION['prescription'],$_POST['test'][$i],$_POST['cost'][$i],$_POST['result'][$i],$_SESSION['log_user']);
 			}
 			$i++;
 		}
 		}
-		$fO->laboratoryBilled($_SESSION['prescription']);
+		$dao->laboratoryBilled($_SESSION['prescription']);
 		header('Location:manage_laboratory.php');
 	}
   ?>
   <html>
-  <?PHP $fO->includeHead('Bill Drugs',0) ?>
+  <?PHP $dao->includeHead('Bill Drugs',0) ?>
 	<script>
 	function addrow(tableID) {
 		var table = document.getElementById(tableID);
@@ -73,7 +73,7 @@ $(".test").click(function(){
 	</script>
   </head>
   <body class="container">
-    <?PHP $fO->includeMenu(4);
+    <?PHP $dao->includeMenu(4);
     ?>
   	<div id="menu_main">
       <a href="manage_laboratory.php">Lab Test Orders</a>
@@ -81,9 +81,9 @@ $(".test").click(function(){
       </div>
       <?php if(isset($_GET['selectedPrescription']) && isset($_GET['selectedPatient'])){
         $selectedPatientId=$_GET['selectedPatient'];
-        $patient=$fO->getPatientByID($selectedPatientId);
-        $observation=$fO->getPrescriptionById($_GET['selectedPrescription']);
-        $tests=$fO->getLabOrderByPrescriptionId($_GET['selectedPrescription']);
+        $patient=$dao->getPatientByID($selectedPatientId);
+        $observation=$dao->getPrescriptionById($_GET['selectedPrescription']);
+        $tests=$dao->getLabOrderByPrescriptionId($_GET['selectedPrescription']);
 				$_SESSION['prescription']=$_GET['selectedPrescription'];
       ?>
       <form class="form-signin" method="POST"  action="<?php echo $_SERVER['PHP_SELF']?>">

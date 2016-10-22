@@ -1,17 +1,19 @@
 <?PHP
-	require 'functions.php';
-	$fO=new functions();
-	$fO->checkLogin();
+	require 'data_access_object.php';
+	$dao=new DAO();
+	$dao->checkLogin();
+	$pageSecurity=12;
 	?>
   <html>
-  <?PHP $fO->includeHead('Patient List',0) ?>
+  <?PHP $dao->includeHead('Patient List',0) ?>
   </head>
   <body class="container">
-  <?PHP $fO->includeMenu(1); ?>
+  <?PHP $dao->includeMenu(1); ?>
 	<div id="menu_main">
     <a href="patient_list.php" id="item_selected">Patient List</a>
     <a href="new_patient.php">New Patient</a>
     </div>
+		<?php if(in_array($pageSecurity, $_SESSION['AllowedPageSecurityTokens'])){?>
   <div class="table-responsive">
     <div class="col-sm-3 col-md-3 pull-left">
           <form class="navbar-form" role="search">
@@ -38,7 +40,7 @@
   </tr>
   <?php
   if(isset($_REQUEST['srch-term'])){
-    $patients=$fO->getPatientByName($_REQUEST['srch-term']);
+    $patients=$dao->getPatientByName($_REQUEST['srch-term']);
     foreach($patients as $patient){
       printf("<tr><td><a href=\"new_patient.php?SelectedPatient=%s\">" .$patient['patient_id'] . "</a></td>
     <td>%s</td>
@@ -55,7 +57,7 @@
     }
   }
   else{
-    $patients=$fO->getAllPatients();
+    $patients=$dao->getAllPatients();
     foreach($patients as $patient){
       printf("<tr><td><a href=\"new_patient.php?SelectedPatient=%s\">" .$patient['patient_id'] . "</a></td>
     <td>%s</td>
@@ -74,5 +76,11 @@
   ?>
   </table>
     </div>
+		<?php }else{
+			echo '<div class="alert alert-danger">
+				<strong>You do not have permission to access this page, please confirm with the system administrator</strong>
+			</div>';
+		}
+		require 'footer.php';?>
   </body>
   </html>

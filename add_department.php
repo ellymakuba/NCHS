@@ -1,21 +1,21 @@
 <!DOCTYPE HTML>
 <?PHP
-require 'functions.php';
-$fO=new functions();
-$fO->checkLogin();
+require 'data_access_object.php';
+$dao=new DAO();
+$dao->checkLogin();
 
 	//Save Changes
 	if (isset($_POST['submit'])){
 	}
 	//Get Settings and Fees
-	$fO->getSettings();
+	$dao->getSettings();
 ?>
 <html>
-	<?PHP $fO->includeHead('Settings | Add Department',1) ?>
+	<?PHP $dao->includeHead('Settings | Add Department',1) ?>
 	<body>
 		<!-- MENU -->
 		<?PHP
-				$fO->includeMenu(6);
+				$dao->includeMenu(6);
 		?>
 		<!-- MENU MAIN -->
 		<div id="menu_main">
