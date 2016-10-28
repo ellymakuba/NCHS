@@ -67,7 +67,7 @@
 			echo '<td>'.$patient['blood_pressure'].'</td>';
 			echo '<td>'.$patientType.'</td>';
 			echo '<td><a href="patient_admission.php?SelectedPatient='.$patient['patient_id'].'&selectedEncounter='.$patient['encounter_id'].
-			'&patientType='.$patient['admitted'].'">Edit</a></td>';
+			'&patientType='.$patient['admitted'].'">Admit</a></td>';
 			echo '</tr>';
     }
   }

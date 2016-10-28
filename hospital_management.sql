@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 01, 2016 at 10:24 AM
+-- Generation Time: Oct 28, 2016 at 11:39 AM
 -- Server version: 5.6.14
 -- PHP Version: 5.5.6
 
@@ -19,6 +19,56 @@ SET time_zone = "+00:00";
 --
 -- Database: `hospital_management`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admission`
+--
+
+CREATE TABLE IF NOT EXISTS `admission` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `encounter_id` int(100) NOT NULL,
+  `patient_id` int(100) NOT NULL,
+  `allergy` int(11) NOT NULL,
+  `insurance` int(11) NOT NULL,
+  `no_of_admissions` int(11) NOT NULL,
+  `ward` int(11) NOT NULL,
+  `bed_no` int(11) NOT NULL,
+  `admission_date` date NOT NULL,
+  `discharge_date` date NOT NULL,
+  `insurance_patient` tinyint(1) NOT NULL DEFAULT '0',
+  `discharged` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `admission`
+--
+
+INSERT INTO `admission` (`id`, `encounter_id`, `patient_id`, `allergy`, `insurance`, `no_of_admissions`, `ward`, `bed_no`, `admission_date`, `discharge_date`, `insurance_patient`, `discharged`) VALUES
+(4, 8, 5020, 1, 2, 2, 1, 12, '2016-10-22', '0000-00-00', 1, 1),
+(5, 9, 5002, 1, 2, 1, 1, 15, '2016-10-22', '0000-00-00', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `allergy`
+--
+
+CREATE TABLE IF NOT EXISTS `allergy` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `allergy`
+--
+
+INSERT INTO `allergy` (`id`, `name`) VALUES
+(1, 'skin allergy'),
+(2, 'dust allergy');
 
 -- --------------------------------------------------------
 
@@ -39,19 +89,7 @@ CREATE TABLE IF NOT EXISTS `billing` (
   `billing_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`billing_id`),
   KEY `patient_id` (`patient_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
-
---
--- Dumping data for table `billing`
---
-
-INSERT INTO `billing` (`patient_id`, `pharma_cost`, `lab_cost`, `consultation_fee`, `operation_cost`, `canteen`, `room_charge`, `tax`, `billing_id`, `billing_time`) VALUES
-(5001, '345', '1250', '450', '0', '0', '0', '0', 1, '2011-11-30 05:00:00'),
-(5002, '680', '7500', '1500', '38000', '3500', '2500', '0', 2, '2012-05-25 06:10:00'),
-(5003, '200', '2250', '850', '0', '0', '0', '0', 3, '2015-09-30 09:00:00'),
-(5004, '400', '8500', '2500', '68000', '3500', '2500', '0', 4, '2014-10-08 10:00:00'),
-(5005, '2000', '3500', '1050', '0', '1500', '3500', '0', 5, '2013-09-10 12:00:00'),
-(5007, '0', '0', '0', '0', '0', '500', '0', 6, '2015-04-17 03:15:29');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -87,38 +125,35 @@ INSERT INTO `blood_group` (`id`, `name`) VALUES
 
 CREATE TABLE IF NOT EXISTS `consultation` (
   `patient_id` int(10) NOT NULL,
-  `observation` varchar(100) NOT NULL,
+  `observation` varchar(255) NOT NULL,
   `prescription_id` int(10) NOT NULL AUTO_INCREMENT,
-  `prescription` mediumblob NOT NULL,
-  `con_time` time NOT NULL,
-  `appointment_date` date DEFAULT NULL,
+  `prescription` varchar(255) NOT NULL,
+  `con_time` datetime NOT NULL,
   `username` varchar(255) NOT NULL,
   `completed` tinyint(1) NOT NULL DEFAULT '0',
+  `encounter_id` int(100) NOT NULL,
+  `pharmacy_billed` tinyint(1) NOT NULL DEFAULT '0',
+  `lab_billed` tinyint(1) NOT NULL DEFAULT '0',
+  `pharmacy_paid` tinyint(1) NOT NULL DEFAULT '0',
+  `pharmacy_dispensed` tinyint(1) NOT NULL DEFAULT '0',
+  `pharmacy_patient` tinyint(1) NOT NULL DEFAULT '0',
+  `lab_patient` tinyint(1) NOT NULL DEFAULT '0',
+  `collected_by_nurse` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`prescription_id`),
   KEY `patient_id` (`patient_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=44 ;
 
 --
 -- Dumping data for table `consultation`
 --
 
-INSERT INTO `consultation` (`patient_id`, `observation`, `prescription_id`, `prescription`, `con_time`, `appointment_date`, `username`, `completed`) VALUES
-(5001, 'Acute urinary tract infection', 1, 0x4143555445205552494e41525920545241435420494e46454354494f4e0a0a54616220446f6c6f202d20363530202d2d2d2d2d2031350a090909312d312d31202a203520646179730a09090928616674657220666f6f64290a0a546162204e6f72666c6f78203430306d67202d2d2d2d2d2031340a090909312d302d31202a203720646179730a09090928616674657220666f6f64290a0a436170204e657574726f6c696e2d42202d2d2d2d2d2031340a090909312d302d31202a203720646179730a09090928616674657220666f6f64290a0a43697472616c6b61204c6971756964202d203120626f74746c650a09090932747366202831306d6c2920696e2074756d626c65722066756c6c206f662077617465720a090909287477696365206120646179290a0a5461622050616e2d442034306d67202d2d2d2d2d2031340a090909312d302d31202a203720646179730a090909286265666f726520666f6f6429, '11:15:00', NULL, '', 0),
-(5001, 'Acute gastroentritis', 2, 0x41435554452047415354524f454e544552495449530a0a546162204369706c6f78202d205432202d2d2d2d2d2031300a090909312d302d31202a203520646179730a09090928616674657220666f6f64290a0a436170204c6163746f766974202d2d2d2d2d2031300a090909312d302d31202a203520646179730a09090928616674657220666f6f64290a0a456e7465726f6765726d696e61205669616c73202d2d2d2d2d2031300a090909312d302d31202a203520646179730a09090928616674657220666f6f64290a0a456c65637472616c2053616368657473202d2d2d2d2d2031300a090909312d302d312028312073616368657420696e20312074756d626c65722066756c6c206f66207761746572290a09090928616674657220666f6f64290a0a43617020496d6f6469756d202d2d2d2d2d2031300a0909093220636170207374617420616e64203120636170206166746572206576657279203320746f2034206c6f6f73652073746f6f6c730a0a54616220456d6573657420346d67202d2d2d2d2d20360a090909312d302d31202a203320646179730a090909283120746162203135206d696e73206265666f72652065616368206d65616c29, '11:45:00', NULL, '', 0),
-(5001, 'Upper respiratory tract infection with fever ', 3, 0x41435554452055505045522052455350495241544f525920545241435420494e46454354494f4e20574954482046455645520a0a54616220446f6c6f202d20363530202d2d2d2d2d2031350a090909312d312d31202a203520646179730a09090928616674657220666f6f64290a0a54616220416c657269642d44202d2d2d2d2d20350a090909302d302d31202a203520646179730a09090928616674657220666f6f64290a0a43617020446f78792d31202d2d2d2d2d2031300a090909312d302d31202a203520646179730a09090928616674657220666f6f64290a0a42656e616472796c20435220436f75676820466f726d756c610a0909092d203120626f74746c650a0932747366202d2032747366202d2032747366202a2031207765656b0a09090928616674657220666f6f64290a0a5461622050616e2d442034306d67202d2d2d2d2d2031300a090909312d302d31202a203520646179730a090909286265666f726520666f6f6429, '12:30:00', NULL, '', 0),
-(5002, 'Upper respiratory tract infection with fever ', 4, 0x41435554452055505045522052455350495241544f525920545241435420494e46454354494f4e20574954482046455645520a0a54616220446f6c6f202d20363530202d2d2d2d2d2031350a090909312d312d31202a203520646179730a09090928616674657220666f6f64290a0a54616220416c657269642d44202d2d2d2d2d20350a090909302d302d31202a203520646179730a09090928616674657220666f6f64290a0a43617020446f78792d31202d2d2d2d2d2031300a090909312d302d31202a203520646179730a09090928616674657220666f6f64290a0a42656e616472796c20435220436f75676820466f726d756c610a0909092d203120626f74746c650a0932747366202d2032747366202d2032747366202a2031207765656b0a09090928616674657220666f6f64290a0a5461622050616e2d442034306d67202d2d2d2d2d2031300a090909312d302d31202a203520646179730a090909286265666f726520666f6f6429, '11:15:00', NULL, '', 0),
-(5002, 'Acute gastroenteritis', 5, 0x41435554452047415354524f454e544552495449530a0a546162204369706c6f78202d205432202d2d2d2d2d2031300a090909312d302d31202a203520646179730a09090928616674657220666f6f64290a0a436170204c6163746f766974202d2d2d2d2d2031300a090909312d302d31202a203520646179730a09090928616674657220666f6f64290a0a456e7465726f6765726d696e61205669616c73202d2d2d2d2d2031300a090909312d302d31202a203520646179730a09090928616674657220666f6f64290a0a456c65637472616c2053616368657473202d2d2d2d2d2031300a090909312d302d312028312073616368657420696e20312074756d626c65722066756c6c206f66207761746572290a09090928616674657220666f6f64290a0a43617020496d6f6469756d202d2d2d2d2d2031300a0909093220636170207374617420616e64203120636170206166746572206576657279203320746f2034206c6f6f73652073746f6f6c730a0a54616220456d6573657420346d67202d2d2d2d2d20360a090909312d302d31202a203320646179730a090909283120746162203135206d696e73206265666f72652065616368206d65616c29, '11:45:00', NULL, '', 0),
-(5009, 'fever', 6, '', '15:00:00', '2015-04-12', '', 0),
-(5010, 'fever', 7, '', '15:15:00', '2015-04-12', '', 0),
-(5011, 'fever', 8, '', '15:30:00', '2015-04-12', '', 0),
-(5012, 'fever', 9, '', '15:45:00', '2015-04-12', '', 0),
-(5013, 'fever', 10, '', '16:00:00', '2015-04-12', '', 0),
-(5014, 'fever', 11, '', '16:15:00', '2015-04-12', '', 0),
-(5015, 'fever', 12, '', '16:30:00', '2015-04-12', '', 0),
-(5016, 'fever', 13, '', '16:45:00', '2015-04-12', '', 0),
-(5017, 'fever', 14, '', '00:00:00', '2015-04-12', '', 0),
-(5018, 'fever', 15, '', '00:00:00', '2015-04-12', '', 0),
-(5019, 'fever', 16, '', '00:00:00', '2015-04-12', '', 0);
+INSERT INTO `consultation` (`patient_id`, `observation`, `prescription_id`, `prescription`, `con_time`, `username`, `completed`, `encounter_id`, `pharmacy_billed`, `lab_billed`, `pharmacy_paid`, `pharmacy_dispensed`, `pharmacy_patient`, `lab_patient`, `collected_by_nurse`) VALUES
+(5020, '					-sevare headache        ', 37, '', '2016-10-22 10:34:48', 'admin', 0, 8, 0, 0, 0, 0, 0, 0, 0),
+(5020, '					        ', 38, '', '2016-10-22 10:44:52', 'admin', 0, 8, 1, 1, 0, 0, 1, 1, 0),
+(5020, '					        -recovering well        ', 39, '', '2016-10-22 12:37:25', 'admin', 0, 8, 0, 0, 0, 0, 0, 0, 0),
+(5002, '					        ', 40, '', '2016-10-22 03:53:43', 'admin', 0, 9, 0, 0, 0, 0, 0, 0, 0),
+(5002, '					        -admitted with pneumonia        ', 41, '', '2016-10-22 03:56:45', 'admin', 0, 9, 1, 0, 0, 0, 1, 0, 0),
+(5002, '					        -discharge patient        ', 43, '', '2016-10-22 04:06:05', 'admin', 0, 9, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -265,15 +300,16 @@ CREATE TABLE IF NOT EXISTS `drug` (
   `company` varchar(255) NOT NULL,
   `category` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `drug`
 --
 
 INSERT INTO `drug` (`id`, `name`, `buying_price`, `selling_price`, `description`, `company`, `category`) VALUES
-(1, 'crocin cold & flu', '5.00', '10.00', 'antibiotic', 'uniliver', 2),
-(2, 'Bro zedex', '0.50', '2.00', 'pain killer', 'uniliver', 1);
+(1, 'crocin cold and flu', '5.00', '10.00', 'antibiotic', 'uniliver', 2),
+(2, 'Bro zedex', '0.50', '2.00', 'pain killer', 'uniliver', 1),
+(3, 'Loperamide', '1.00', '5.00', 'Loperamide', 'uniliver', 2);
 
 -- --------------------------------------------------------
 
@@ -322,7 +358,7 @@ INSERT INTO `duration` (`id`, `name`, `symbol`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `encounter` (
-  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `encounter_id` int(100) NOT NULL AUTO_INCREMENT,
   `weight` decimal(20,2) NOT NULL,
   `temperature` decimal(20,2) NOT NULL,
   `blood_pressure` varchar(255) NOT NULL,
@@ -330,8 +366,90 @@ CREATE TABLE IF NOT EXISTS `encounter` (
   `respiration` varchar(255) NOT NULL,
   `open` tinyint(1) NOT NULL DEFAULT '1',
   `added_by` varchar(255) NOT NULL,
+  `time_created` datetime NOT NULL,
+  `patient_id` int(100) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `admitted` tinyint(1) NOT NULL DEFAULT '0',
+  `seen_doctor` tinyint(1) NOT NULL DEFAULT '0',
+  `admit` tinyint(1) NOT NULL DEFAULT '0',
+  `bill_cleared` tinyint(1) NOT NULL DEFAULT '0',
+  `prescription_id` int(100) NOT NULL,
+  `allow_discharge` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`encounter_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+--
+-- Dumping data for table `encounter`
+--
+
+INSERT INTO `encounter` (`encounter_id`, `weight`, `temperature`, `blood_pressure`, `pulse`, `respiration`, `open`, `added_by`, `time_created`, `patient_id`, `updated_by`, `admitted`, `seen_doctor`, `admit`, `bill_cleared`, `prescription_id`, `allow_discharge`) VALUES
+(8, '56.00', '20.00', 'normal', '72', 'normal', 0, 'admin', '2016-10-22 09:35:12', 5020, NULL, 1, 1, 1, 1, 39, 1),
+(9, '82.00', '22.00', '166', '60', 'fast', 0, 'admin', '2016-10-22 03:53:24', 5002, NULL, 1, 1, 1, 1, 43, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hospital_charges`
+--
+
+CREATE TABLE IF NOT EXISTS `hospital_charges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `cost` decimal(20,2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `hospital_charges`
+--
+
+INSERT INTO `hospital_charges` (`id`, `name`, `cost`) VALUES
+(1, 'consultation Fee', '1000.00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hospital_charges_payment`
+--
+
+CREATE TABLE IF NOT EXISTS `hospital_charges_payment` (
+  `prescription_id` int(100) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `cost` decimal(20,2) NOT NULL,
+  `date_paid` date NOT NULL,
+  `received_by` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `hospital_charges_payment`
+--
+
+INSERT INTO `hospital_charges_payment` (`prescription_id`, `item_id`, `cost`, `date_paid`, `received_by`) VALUES
+(34, 1, '1000.00', '2016-09-07', 'admin'),
+(38, 1, '1000.00', '2016-10-22', 'admin'),
+(41, 1, '1000.00', '2016-10-22', 'admin');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `insurance_company`
+--
+
+CREATE TABLE IF NOT EXISTS `insurance_company` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `insurance_company`
+--
+
+INSERT INTO `insurance_company` (`id`, `name`) VALUES
+(1, 'Amaco'),
+(2, 'AON'),
+(3, 'Madison'),
+(4, 'AAR');
 
 -- --------------------------------------------------------
 
@@ -347,16 +465,17 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `batch_no` varchar(255) NOT NULL,
   `purchase_order_id` int(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
 --
 -- Dumping data for table `inventory`
 --
 
 INSERT INTO `inventory` (`id`, `drug_id`, `quantity`, `expiry_date`, `batch_no`, `purchase_order_id`) VALUES
-(9, 0, 5000, '2016-11-30', 'DA523', 21),
-(10, 0, 1200, '2017-02-28', '225745', 21),
-(11, 2, 1200, '2016-08-31', '522', 22);
+(9, 1, 5000, '2016-11-30', 'DA523', 21),
+(10, 1, 1200, '2017-02-28', '225745', 21),
+(11, 2, 1200, '2016-08-31', '522', 22),
+(12, 3, 10000, '2016-11-30', 'GD25', 2);
 
 -- --------------------------------------------------------
 
@@ -367,7 +486,7 @@ INSERT INTO `inventory` (`id`, `drug_id`, `quantity`, `expiry_date`, `batch_no`,
 CREATE TABLE IF NOT EXISTS `laboratory` (
   `lab_id` int(10) NOT NULL AUTO_INCREMENT,
   `dept_id` int(10) NOT NULL,
-  `lab_name` varchar(25) NOT NULL,
+  `test` varchar(25) NOT NULL,
   `lab_in_charge` int(25) NOT NULL,
   `cost` decimal(10,0) NOT NULL,
   PRIMARY KEY (`lab_id`),
@@ -378,7 +497,7 @@ CREATE TABLE IF NOT EXISTS `laboratory` (
 -- Dumping data for table `laboratory`
 --
 
-INSERT INTO `laboratory` (`lab_id`, `dept_id`, `lab_name`, `lab_in_charge`, `cost`) VALUES
+INSERT INTO `laboratory` (`lab_id`, `dept_id`, `test`, `lab_in_charge`, `cost`) VALUES
 (1, 1, 'MRI Scan', 2002, '1250'),
 (2, 1, 'Blood Test', 2004, '2250'),
 (3, 1, 'Angiogram', 2006, '3000'),
@@ -394,59 +513,69 @@ INSERT INTO `laboratory` (`lab_id`, `dept_id`, `lab_name`, `lab_in_charge`, `cos
 -- --------------------------------------------------------
 
 --
--- Table structure for table `lab_patient`
+-- Table structure for table `lab_order_dispensed`
 --
 
-CREATE TABLE IF NOT EXISTS `lab_patient` (
-  `sl_no` int(11) NOT NULL AUTO_INCREMENT,
-  `lab_id` int(10) NOT NULL,
-  `patient_id` int(10) NOT NULL,
-  `result` mediumblob NOT NULL,
-  `result_size` varchar(30) NOT NULL,
-  `result_name` varchar(30) NOT NULL,
-  `result_type` varchar(30) NOT NULL,
-  PRIMARY KEY (`sl_no`),
-  KEY `patient_id` (`patient_id`),
-  KEY `lab_id` (`lab_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+CREATE TABLE IF NOT EXISTS `lab_order_dispensed` (
+  `prescription_id` int(11) NOT NULL,
+  `lab_test_id` int(100) NOT NULL,
+  `cost` decimal(20,2) NOT NULL,
+  `result` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `lab_patient`
+-- Dumping data for table `lab_order_dispensed`
 --
 
-INSERT INTO `lab_patient` (`sl_no`, `lab_id`, `patient_id`, `result`, `result_size`, `result_name`, `result_type`) VALUES
-(1, 1, 5001, 0x44617465200909526573756c74730d0a31332d392d32303132094d5249205363616e206e6567617469766520666f7220616e792074756d6f75726f7573206d6173732e, '', '', ''),
-(2, 1, 5002, 0x44617465200909526573756c74730d0a32362d362d32303134094d5249205363616e206e656761617469766520666f7220616e79206d616a6f7220696e6a7572696573206f722061626e6f726d616c697469657320696e207468652073746f6d61636820617265612e, '', '', ''),
-(3, 2, 5001, 0x44617465200909526573756c74730d0a32362d362d32303134094c6f7720776869746520626c6f6f642063656c6c7320636f756e742e42656c6f7720617665726167652076616c75652e0d0a09090952424320636f756e74206e6f726d616c2e0d0a090909426c6f6f64205479706520697320422d2e0d0a, '', '', ''),
-(4, 2, 5002, 0x44617465200909526573756c74730d0a32362d362d323031340952424320616e642057424320636f756e74206973206e6f726d616c2e0d0a090909426c6f6f64205479706520697320422b2e, '', '', ''),
-(5, 3, 5001, 0x44617465200909526573756c74730d0a32302d362d323031320948656172742052617465206e6f726d616c2e4e6f206972726567756c6172697469657320696e20686561727420626561742e0d0a090909486967682063686f6c657374726f6c206c6576656c732e0d0a0909090d0a, '', '', '');
+INSERT INTO `lab_order_dispensed` (`prescription_id`, `lab_test_id`, `cost`, `result`, `username`) VALUES
+(34, 3, '3000.00', 'positive', 'admin'),
+(38, 1, '1250.00', 'positive', 'admin');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `medicine_patient`
+-- Table structure for table `lab_test_order`
 --
 
-CREATE TABLE IF NOT EXISTS `medicine_patient` (
-  `patient_id` int(10) NOT NULL,
-  `medicine_id` int(10) NOT NULL,
-  `prescription_id` int(10) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  PRIMARY KEY (`patient_id`,`medicine_id`),
-  KEY `prescription_id` (`prescription_id`),
-  KEY `medicine_id` (`medicine_id`)
+CREATE TABLE IF NOT EXISTS `lab_test_order` (
+  `prescription_id` int(100) NOT NULL,
+  `lab_test_id` int(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `medicine_patient`
+-- Dumping data for table `lab_test_order`
 --
 
-INSERT INTO `medicine_patient` (`patient_id`, `medicine_id`, `prescription_id`, `quantity`) VALUES
-(5001, 1, 1, 2),
-(5001, 2, 2, 3),
-(5001, 3, 3, 5),
-(5002, 3, 4, 10),
-(5002, 4, 5, 4);
+INSERT INTO `lab_test_order` (`prescription_id`, `lab_test_id`) VALUES
+(31, 6),
+(31, 3),
+(34, 3),
+(35, 1),
+(38, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lab_test_payment`
+--
+
+CREATE TABLE IF NOT EXISTS `lab_test_payment` (
+  `prescription_id` int(100) NOT NULL,
+  `test_id` int(100) NOT NULL,
+  `cost` decimal(20,2) NOT NULL,
+  `date_paid` date NOT NULL,
+  `received_by` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `lab_test_payment`
+--
+
+INSERT INTO `lab_test_payment` (`prescription_id`, `test_id`, `cost`, `date_paid`, `received_by`) VALUES
+(34, 3, '3000.00', '2016-09-07', 'admin'),
+(38, 1, '1250.00', '2016-10-22', 'admin'),
+(38, 1, '1250.00', '2016-10-22', 'admin');
 
 -- --------------------------------------------------------
 
@@ -528,17 +657,6 @@ CREATE TABLE IF NOT EXISTS `nurse_work` (
   KEY `medication_2` (`medication`),
   KEY `nurse_id` (`nurse_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `nurse_work`
---
-
-INSERT INTO `nurse_work` (`nurse_id`, `patient_id`, `shift_start`, `shift_end`, `room_no`, `medication`, `food`, `username`) VALUES
-(1001, 5001, '10:15:00', '15:30:00', 'SP3', 2, 'Non-Diabetic', 'admin'),
-(1002, 5003, '10:30:00', '13:00:00', 'P2', 4, 'Diabetic', ''),
-(1003, 5003, '22:30:00', '05:00:00', 'P2', 5, 'Diabetic', ''),
-(1004, 5001, '07:30:00', '11:00:00', 'SP3', 3, 'Non-Diabetic', 'admin'),
-(1005, 5001, '02:30:00', '08:00:00', 'SP3', 1, 'Non-Diabetic', 'admin');
 
 -- --------------------------------------------------------
 
@@ -646,6 +764,80 @@ INSERT INTO `pharmacy` (`medicine_name`, `med_id`, `cost`, `date_manufacture`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pharmacy_payment`
+--
+
+CREATE TABLE IF NOT EXISTS `pharmacy_payment` (
+  `prescription_id` int(100) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `amount` decimal(20,2) NOT NULL,
+  `date_paid` date NOT NULL,
+  `received_by` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `pharmacy_payment`
+--
+
+INSERT INTO `pharmacy_payment` (`prescription_id`, `item_id`, `amount`, `date_paid`, `received_by`) VALUES
+(34, 1, '100.00', '2016-09-07', 'admin'),
+(34, 3, '75.00', '2016-09-07', 'admin'),
+(38, 1, '840.00', '2016-10-22', 'admin'),
+(41, 2, '20.00', '2016-10-22', 'admin');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prescription_dispensed`
+--
+
+CREATE TABLE IF NOT EXISTS `prescription_dispensed` (
+  `prescription_id` int(100) NOT NULL,
+  `drug_id` int(11) NOT NULL,
+  `dose` varchar(255) NOT NULL,
+  `duration` varchar(255) NOT NULL,
+  `quantity` decimal(20,1) NOT NULL,
+  `cost` decimal(20,2) NOT NULL,
+  `amount` decimal(20,2) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `date_dispensed` date NOT NULL,
+  `collected_by_nurse` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `prescription_dispensed`
+--
+
+INSERT INTO `prescription_dispensed` (`prescription_id`, `drug_id`, `dose`, `duration`, `quantity`, `cost`, `amount`, `username`, `date_dispensed`, `collected_by_nurse`) VALUES
+(38, 1, '1 tab BD', '2 weeks', '28.0', '10.00', '280.00', 'admin', '2016-10-22', 1),
+(38, 1, '1 tab BD', '2 weeks', '28.0', '10.00', '280.00', 'admin', '2016-10-22', 1),
+(38, 1, '1 tab BD', '2 weeks', '28.0', '10.00', '280.00', 'admin', '2016-10-22', 1),
+(41, 2, '1 tab BD', '5 days', '10.0', '2.00', '20.00', 'admin', '2016-10-22', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prescription_order`
+--
+
+CREATE TABLE IF NOT EXISTS `prescription_order` (
+  `prescription_id` int(100) NOT NULL,
+  `drug_id` int(11) NOT NULL,
+  `dose` varchar(255) NOT NULL,
+  `duration` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `prescription_order`
+--
+
+INSERT INTO `prescription_order` (`prescription_id`, `drug_id`, `dose`, `duration`) VALUES
+(38, 1, '1 tab BD', '2 weeks'),
+(41, 2, '1 tab BD', '5 days');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `purchase_order`
 --
 
@@ -654,15 +846,15 @@ CREATE TABLE IF NOT EXISTS `purchase_order` (
   `entry_date` date NOT NULL DEFAULT '0000-00-00',
   `supplier_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `purchase_order`
 --
 
 INSERT INTO `purchase_order` (`id`, `entry_date`, `supplier_id`) VALUES
-(21, '2016-08-31', 1),
-(22, '2016-08-31', 2);
+(1, '1970-01-01', 1),
+(2, '1970-01-01', 1);
 
 -- --------------------------------------------------------
 
@@ -702,6 +894,105 @@ INSERT INTO `rooms` (`room_type`, `room_cost`, `total_occupied`, `room_no`, `roo
 ('semiprivate', '2000', 1, 'SP3', 2),
 ('semiprivate', '2000', 2, 'SP4', 2),
 ('semiprivate', '2000', 1, 'SP5', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `securitygroups`
+--
+
+CREATE TABLE IF NOT EXISTS `securitygroups` (
+  `secroleid` int(11) NOT NULL DEFAULT '0',
+  `tokenid` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`secroleid`,`tokenid`),
+  KEY `secroleid` (`secroleid`),
+  KEY `tokenid` (`tokenid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `securitygroups`
+--
+
+INSERT INTO `securitygroups` (`secroleid`, `tokenid`) VALUES
+(1, 6),
+(1, 13),
+(6, 2),
+(6, 3),
+(6, 5),
+(6, 6),
+(6, 7),
+(6, 13),
+(7, 6),
+(8, 1),
+(8, 2),
+(8, 3),
+(8, 4),
+(8, 5),
+(8, 6),
+(8, 7),
+(8, 8),
+(8, 9),
+(8, 10),
+(8, 11),
+(8, 12),
+(8, 13),
+(8, 14),
+(9, 9);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `securityroles`
+--
+
+CREATE TABLE IF NOT EXISTS `securityroles` (
+  `secroleid` int(11) NOT NULL AUTO_INCREMENT,
+  `secrolename` text NOT NULL,
+  PRIMARY KEY (`secroleid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+
+--
+-- Dumping data for table `securityroles`
+--
+
+INSERT INTO `securityroles` (`secroleid`, `secrolename`) VALUES
+(1, 'Supplier'),
+(6, 'Accountant'),
+(7, 'client'),
+(8, 'System Administrator');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `securitytokens`
+--
+
+CREATE TABLE IF NOT EXISTS `securitytokens` (
+  `tokenid` int(11) NOT NULL DEFAULT '0',
+  `tokenname` text NOT NULL,
+  PRIMARY KEY (`tokenid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `securitytokens`
+--
+
+INSERT INTO `securitytokens` (`tokenid`, `tokenname`) VALUES
+(1, 'system administration'),
+(2, 'inventory management'),
+(3, 'purchase order management'),
+(4, 'sales order management'),
+(5, 'view reports'),
+(6, 'client access'),
+(7, 'bill management'),
+(8, 'nurse access'),
+(9, 'doctor access'),
+(10, 'laboratory management'),
+(11, 'pharmacy management'),
+(12, 'patient management'),
+(13, 'Unknown'),
+(14, 'Unknown'),
+(15, 'unknown');
 
 -- --------------------------------------------------------
 
@@ -801,31 +1092,6 @@ INSERT INTO `supplier` (`id`, `name`, `phoneNO`, `gender`, `address`, `status`) 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ugroup`
---
-
-CREATE TABLE IF NOT EXISTS `ugroup` (
-  `ugroup_id` int(11) NOT NULL AUTO_INCREMENT,
-  `ugroup_name` varchar(100) NOT NULL,
-  `ugroup_admin` int(11) NOT NULL,
-  `ugroup_delete` int(2) NOT NULL,
-  `ugroup_report` int(11) NOT NULL,
-  `ugroup_created` int(15) NOT NULL,
-  PRIMARY KEY (`ugroup_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `ugroup`
---
-
-INSERT INTO `ugroup` (`ugroup_id`, `ugroup_name`, `ugroup_admin`, `ugroup_delete`, `ugroup_report`, `ugroup_created`) VALUES
-(1, 'Administrator', 1, 1, 1, 1453123220),
-(2, 'Management', 0, 1, 1, 1453144125),
-(3, 'Employee', 0, 1, 0, 1453125729);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `user`
 --
 
@@ -833,75 +1099,39 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(200) NOT NULL,
   `user_pw` varchar(255) NOT NULL,
-  `ugroup_id` int(11) NOT NULL,
-  `empl_id` int(11) NOT NULL,
-  `user_created` int(15) NOT NULL,
+  `secroleid` int(11) NOT NULL,
+  `date_created` date NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `user_name`, `user_pw`, `ugroup_id`, `empl_id`, `user_created`) VALUES
-(1, 'admin', '7c4a8d09ca3762af61e59520943dc26494f8941b', 1, 0, 1458988020),
-(5, 'demouser', '7c4a8d09ca3762af61e59520943dc26494f8941b', 3, 0, 1458474080);
+INSERT INTO `user` (`user_id`, `user_name`, `user_pw`, `secroleid`, `date_created`) VALUES
+(1, 'admin', '7c4a8d09ca3762af61e59520943dc26494f8941b', 8, '0000-00-00'),
+(5, 'demouser', '7c4a8d09ca3762af61e59520943dc26494f8941b', 3, '0000-00-00'),
+(6, 'elly', '7c4a8d09ca3762af61e59520943dc26494f8941b', 6, '0000-00-00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `ward`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `ward` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `role` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'patient',
-  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password` char(64) COLLATE utf8_unicode_ci NOT NULL,
-  `salt` char(16) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`,`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5006 ;
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `ward`
 --
 
-INSERT INTO `users` (`id`, `role`, `username`, `password`, `salt`, `email`) VALUES
-(1, 'doctor', 'Srinivas M', '20efccccfac5d52fb2f00bd03fa0fa622a89c046882265560ce21dfe0763cf42', '1de24d594b60df6a', 'sri@gmail.com'),
-(2, 'doctor', 'Sindhura', '6da33dd3b9637a35c7f3654959e01bfbddf6ea756f5fc2077e147741a30b7419', '236fd28436e74a2e', 'sindhura@gmail.com'),
-(3, 'doctor', 'Kiran_K', '42318c8db60a8cb3be8446a96e92e2170bbc7f6ed4e2abb7b8244aa381b04824', '65accefe1aec3950', 'kiran@gmail.com'),
-(4, 'doctor', 'Nagaraj_K', '50fbbd88cf846864a577d1f56f1988d272ee3e2f5d16307d18184b363d554cea', '2d2f6108e6a6fe8', 'naga@gmail.com'),
-(5, 'doctor', 'Shankar_K_S', '0ff4dd01c1dc40ebfd4005c7a3d6f6f275d0efc63474e5e78f9f7e370b4f179c', '427450381cc12e3e', 'shankar@gmail.com'),
-(6, 'doctor', 'Kavitha_S', 'dd333817b7cd7aedbda07ba339a29ce8126754540831c11f8e06966886e5dc2d', '284290606a20522e', 'kavitha@gmail.com'),
-(7, 'doctor', 'Gnanamurthy', '2d2c82d3c503addae230a5209274574073af7529cd8424ed00d15d569aa2ac6c', '100734217bdde389', 'gmurthy@gmail.com'),
-(8, 'doctor', 'Yamini_S', '68ac621d811df0326b4053c07033e52b2039a0d0927c871941c6c65f10f874fd', '228a16175d68850b', 'yamini@gmail.com'),
-(9, 'doctor', 'Chandana_S', '23ceceaa750b27380037b516070cf433aa95caa033e53de34016751bbe73e1da', '3f4a36665f233fb3', 'chandana.shankar25@gmail.com'),
-(10, 'doctor', 'Lakshmi_N_Y', '75d8eac37d81ca3dfd5cdfef4de95ee90a2dd374d2a10b4924b9e92fa69f2870', 'cb78bce7b286c02', 'lakshmi@gmail.com'),
-(11, 'doctor', 'Keerthana_B', '9e10aade02b0cc99041bb4e90f0f2cf47e56024a357a14097184290e05d5a8b6', '7213a6962a8c3a12', 'coolkbysani@gmail.com'),
-(500, 'admin', 'vinay_patil', 'a1b03294622e663e0a8733c05cf8952cee13e3807b31b9d13004185a43813911', '2daf743638ae2e43', 'vinay@gmail.com'),
-(1001, 'nurse', 'Archana_A', 'bd9ee3953745596072f30a88440decae88463e0ab3459867ad238394e3ab59c0', '3daf673cb2d61', 'archana@gmail.com'),
-(1002, 'nurse', 'Ananya_K', '9426a12ebe96b00d7b127774e5ba836ed86ed70bd17f30a61d66ef8c9bcbe822', '6aaef23d49a2dc31', 'ananya@gmail.com'),
-(1003, 'nurse', 'Usha_R', '3e977214d7b96ea9915abc97b18df0ae47b2b973f906858d77bc3346fcb82d3b', '3a75fbdd5e25941b', 'usha@gmail.com'),
-(1004, 'nurse', 'Asha_P', 'ac2344362685223e849a2c0e5e0d60b954d61034040d72cfd74f284d02d62adb', '38b92abb2a39b2c0', 'asha@gmail.com'),
-(1005, 'nurse', 'Anasuya_T', '9961855193696bc6979d4e86294d5689fec28634cf27ebc62d0bdad21563ae13', '4bb317204c2ae2aa', 'anasuya@gmail.com'),
-(2001, 'technician', 'Bharadwaj_T', '', '', ''),
-(2002, 'laboratorist', 'Mahesh_L', 'dddb9a7969feb5668ed50a5f8760806e5e8dff8fd313d232b4f804a879f6a0e5', '1ac0535177fc632b', 'Mahesh_L@gmail.com'),
-(2003, 'receptionist', 'Shifali_Y', '', '', ''),
-(2004, 'laboratorist', 'Kavya_S', '4110dfdb4c3d97ac2893d6fa76c68725b5aeb9acf30409e2933b9dfc9c46b7c7', '558f6bde5a440041', 'Kavya_S@gmail.com'),
-(2005, 'pharmacist', 'Veerappa_L', '3920511623ea194ee984fdf67f8ed50238754f7137e0f056e60117950f5edf3a', '3aa7991414322c52', 'Veerappa_L@gmail.com'),
-(2006, 'laboratorist', 'Niraj_Kumar_B', 'fd2f3c6758fdad781bbc9083bd33e0145436a1235713cf38ffc2d472686d62e6', '2f51e8a36b0f375b', 'Niraj@gmail.com'),
-(2007, 'laboratorist', 'Keshav', '8a2cc7f193e2b49899c8e56d30761923ba722842c6cc1d6c07f2b6976aa095ba', '1a022216485481', 'Keshav@gmail.com'),
-(2009, 'laboratorist', 'Kaustubh_R', '1f02696ac05ede8fe0c8de90ed5b51569fe5eea63c41bc61d93ecb7e237c5377', '55c91c877ae93c7c', 'Kaustubh_R@gmail.com'),
-(2010, 'laboratorist', 'Lokesh_L', 'e526a555970b54411e2c534edfd40bd925ca9bde8231f1e7273bee8027da5cd2', '72d794f71db430bc', 'lokesha805@gmail.com'),
-(2011, 'laboratorist', 'Saket_M', '46e866f93cdbe36ad2e72225e9a0cd2a4bb0732e4af76d0d8de01cd511d20a78', '461b40a65cc91737', 'saket@gmail.com'),
-(2012, 'laboratorist', 'Ambuj_D', '52ac9c9e5ad71ef8491c01a58382471ff9b996f72392666780b0f8e770ac2929', '12e243bd68f24b2f', 'ambuj2410@gmail.com'),
-(5001, 'patient', 'K_R_Muthuswamy', '477133233d72a21aff4af91bb45c6a2c1a40c2ea4507aac8e5d0b34f14c15eb8', '19c1ad19230de55d', 'muthu@gmail.com'),
-(5002, 'patient', 'Basavaraja_T', 'e3eaec58ae9ba61edb4640e69c73df1a2a99b8bd999c0ec0ee1512876993fe12', '21fc895626570c80', 'Basavaraja_T@gmail.com'),
-(5003, 'patient', 'Vinitha_M', '69d3d2a49b7a0ba466a1460f030b9ecdbe5a4dbc677742f11786cf907eafb910', '250c529351de55a', 'Vinitha@gmail.com'),
-(5004, 'patient', 'Rajini_K', '730eb539940914c9a408ce52d077d492920fb16fe5bbdef013b028c76cca1acc', '6a9e2446317245b6', 'Rajini@gmail.com'),
-(5005, 'patient', 'Richa_S', 'c211695cf43f8f35f89df6d63e2758f0853f23b8246c800f6604b436b9acbdb8', 'd613874149582b9', 'richa@gmail.com');
+INSERT INTO `ward` (`id`, `name`) VALUES
+(1, 'Nyayo'),
+(2, 'Kabete');
 
 --
 -- Constraints for dumped tables
@@ -930,21 +1160,6 @@ ALTER TABLE `doctor`
 --
 ALTER TABLE `laboratory`
   ADD CONSTRAINT `laboratory_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `department` (`department_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `lab_patient`
---
-ALTER TABLE `lab_patient`
-  ADD CONSTRAINT `lab_patient_ibfk_5` FOREIGN KEY (`lab_id`) REFERENCES `laboratory` (`lab_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `lab_patient_ibfk_6` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `medicine_patient`
---
-ALTER TABLE `medicine_patient`
-  ADD CONSTRAINT `medicine_patient_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `medicine_patient_ibfk_2` FOREIGN KEY (`prescription_id`) REFERENCES `consultation` (`prescription_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `medicine_patient_ibfk_3` FOREIGN KEY (`medicine_id`) REFERENCES `pharmacy` (`med_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `nurse`
